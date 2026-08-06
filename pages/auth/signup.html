@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create account — EXE Development</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #120d0a;
+    --panel: rgba(22, 18, 15, 0.88);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --text: #f5ede1;
+    --text-muted: rgba(245, 237, 225, 0.7);
+    --accent: #b794f6;
+    --input-bg: rgba(255,255,255,0.05);
+    --input-border: rgba(255,255,255,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background:
+      repeating-linear-gradient(91deg, rgba(0,0,0,0.12) 0px, transparent 1.5px, transparent 3px, rgba(255,255,255,0.02) 4px, transparent 6px, transparent 14px),
+      repeating-linear-gradient(91deg, transparent 0px, rgba(0,0,0,0.14) 60px, transparent 62px, transparent 140px),
+      var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: none;
+    pointer-events: none;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .auth-shell {
+    width: min(440px, calc(100% - 40px));
+    position: relative;
+  }
+
+  .auth-card {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 28px;
+    padding: 28px 22px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.30);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+  }
+
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 35%);
+    pointer-events: none;
+  }
+
+  .auth-brand {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .auth-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: var(--text);
+  }
+
+  .auth-logo-mark {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+  }
+
+  .auth-logo-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .auth-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 4vw, 40px);
+    line-height: 1.05;
+  }
+
+  .auth-copy {
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 95%;
+  }
+
+  .auth-form {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .form-field {
+    display: grid;
+    gap: 8px;
+  }
+
+  .checkbox-field {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .checkbox-field input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    margin: 2px 0 0 0;
+    flex-shrink: 0;
+  }
+
+  .checkbox-field span {
+    display: block;
+  }
+
+  .checkbox-field a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .checkbox-field a:hover {
+    text-decoration: underline;
+  }
+
+  .form-field label {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .form-field input {
+    width: 100%;
+    border: 1px solid var(--input-border);
+    border-radius: 14px;
+    background: var(--input-bg);
+    color: var(--text);
+    padding: 14px 16px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  .form-field input::placeholder {
+    color: rgba(245,237,225,0.42);
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 100px;
+    padding: 14px 20px;
+    background: linear-gradient(155deg, #b794f6, #7c3aed);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 34px rgba(139,92,246,0.25);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .auth-status {
+    display: none;
+    font-size: 13.5px;
+    line-height: 1.5;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .auth-status.active { display: block; }
+  .auth-status.error {
+    background: rgba(247, 118, 118, 0.12);
+    border: 1px solid rgba(247, 118, 118, 0.28);
+    color: #f7b6b6;
+  }
+  .auth-status.success {
+    background: rgba(126, 232, 154, 0.1);
+    border: 1px solid rgba(126, 232, 154, 0.28);
+    color: #b7f0c6;
+  }
+
+  .auth-secondary {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .auth-secondary a { color: var(--accent); }
+
+  .circle-glow {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .glow-1 {
+    width: 220px;
+    height: 220px;
+    top: -50px;
+    right: -50px;
+    background: transparent;
+    filter: blur(0);
+  }
+
+  .glow-2 {
+    width: 180px;
+    height: 180px;
+    bottom: -70px;
+    left: -50px;
+    background: transparent;
+    filter: blur(0);
+  }
+
+  .form-error {
+    display: none;
+    color: #f7b6b6;
+    font-size: 13px;
+    margin-top: -8px;
+    margin-bottom: 10px;
+  }
+
+  .form-error.active {
+    display: block;
+  }
+
+  .page-transition {
+    position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+    background: radial-gradient(circle at center, rgba(183,148,246,0.16), rgba(18,13,10,0.96));
+    opacity: 0; transition: opacity 320ms ease;
+  }
+  .page-transition.is-visible { opacity: 1; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    transition: opacity 700ms cubic-bezier(.2,.8,.2,1), transform 700ms cubic-bezier(.2,.8,.2,1);
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+
+  body { opacity: 1; transition: opacity 320ms ease; }
+  body.page-enter { opacity: 1; }
+  body.page-exit { opacity: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal, .page-transition, body { transition: none !important; }
+  }
+
+  @media (max-width: 520px) {
+    .auth-card { padding: 32px 22px; }
+    .auth-form { gap: 16px; }
+    .auth-secondary { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+  <main class="auth-shell">
+    <div class="auth-card">
+
+      <div class="auth-brand">
+        <a href="/auth/login" class="auth-logo">
+          <span class="auth-logo-mark">
+            <img src="/static/assets/logo/logo-mini.png" alt="EXE" onerror="this.style.display='none';">
+          </span>
+          EXE Development
+        </a>
+        <div>
+          <h1 class="auth-title" id="authTitle">Create your EXE account</h1>
+          <p class="auth-copy" id="authCopy">Join our community and access your projects, settings, and workspace tools. If you already have an account, sign in instead.</p>
+        </div>
+      </div>
+
+      <div class="auth-status" id="authStatus" role="alert" aria-live="polite"></div>
+
+      <form class="auth-form" id="signupForm" novalidate>
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" placeholder="Your full name" required autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="Choose a password" required autocomplete="new-password" minlength="8">
+        </div>
+        <div class="form-field">
+          <label for="confirmPassword">Confirm password</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Repeat your password" required autocomplete="new-password">
+        </div>
+        <div class="form-field">
+          <label class="checkbox-field"><input type="checkbox" name="agreeTerms" required><span>I agree to the <a href="/legal/terms">Terms of Service</a>.</span></label>
+        </div>
+        <div class="form-field">
+          <label class="checkbox-field"><input type="checkbox" name="agreePrivacy" required><span>I agree to the <a href="/legal/privacy">Privacy Policy</a>.</span></label>
+        </div>
+        <button type="submit" class="btn-submit" id="signupSubmit">Create account</button>
+      </form>
+
+      <div class="auth-secondary" id="signupSecondary">
+        <p>Already have an account? <a href="/auth/login">Sign in</a></p>
+        <p><a href="/">Return to EXE</a></p>
+      </div>
+    </div>
+  </main>
+  <div class="page-transition" aria-hidden="true"></div>
+  <script>
+    document.body.classList.add('page-enter');
+    const transitionOverlay = document.querySelector('.page-transition');
+    const revealTargets = document.querySelectorAll('.auth-shell, .auth-card, .auth-brand, .auth-form, .auth-secondary');
+
+    revealTargets.forEach((el, index) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = `${index * 70}ms`;
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealTargets.forEach((el) => revealObserver.observe(el));
+
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const href = link.getAttribute('href') || '';
+      const isLocal = href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('#') && !href.startsWith('javascript:') && !link.hasAttribute('target');
+      if (!isLocal) return;
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.body.classList.add('page-exit');
+        transitionOverlay.classList.add('is-visible');
+        setTimeout(() => { window.location.href = href; }, 260);
+      });
+    });
+
+    const form = document.querySelector('.auth-form');
+    const password = document.querySelector('#password');
+    const confirmPassword = document.querySelector('#confirmPassword');
+
+    const createError = () => {
+      let error = document.querySelector('.form-error');
+      if (!error) {
+        error = document.createElement('div');
+        error.className = 'form-error';
+        confirmPassword.parentNode.insertBefore(error, confirmPassword.nextSibling);
+      }
+      return error;
+    };
+
+    confirmPassword.addEventListener('input', () => {
+      const error = document.querySelector('.form-error');
+      if (error && confirmPassword.value === password.value) {
+        error.classList.remove('active');
+      }
+    });
+
+    // ── Signup wiring ─────────────────────────────────────────────────
+    const statusEl = document.getElementById('authStatus');
+    const signupSubmit = document.getElementById('signupSubmit');
+    const authTitle = document.getElementById('authTitle');
+    const authCopy = document.getElementById('authCopy');
+    const signupSecondary = document.getElementById('signupSecondary');
+
+    function showStatus(message, kind) {
+      statusEl.textContent = message;
+      statusEl.className = 'auth-status active ' + kind;
+    }
+
+    // If already logged in, no need to sign up again.
+    fetch('/api/auth/session').then(r => r.json()).then(data => {
+      if (data && data.user) window.location.href = '/';
+    }).catch(() => {});
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (password.value !== confirmPassword.value) {
+        const error = createError();
+        error.textContent = 'Passwords do not match. Please confirm your password.';
+        error.classList.add('active');
+        confirmPassword.focus();
+        return;
+      }
+      if (password.value.length < 8) {
+        showStatus('Password must be at least 8 characters', 'error');
+        return;
+      }
+
+      signupSubmit.disabled = true;
+      signupSubmit.textContent = 'Creating account…';
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('email').value.trim(),
+            password: password.value,
+            display_name: document.getElementById('name').value.trim(),
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || 'Something went wrong. Try again');
+
+        form.style.display = 'none';
+        signupSecondary.style.display = 'none';
+        authTitle.textContent = 'Check your email';
+        authCopy.textContent = "We sent a verification link to your email. Verify it, then come back and sign in.";
+        showStatus('Account created. Check your inbox to verify your email before signing in.', 'success');
+      } catch (err) {
+        showStatus(err.message, 'error');
+      } finally {
+        signupSubmit.disabled = false;
+        signupSubmit.textContent = 'Create account';
+      }
+    });
+  </script>
+</body>
+</html>

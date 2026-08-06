@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rebloxed — by EXE Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#020203;
+    --bg-elev:#08080a;
+    --bg-card: rgba(255,255,255,0.015);
+    --purple:#a855f7;
+    --purple-bright:#c084fc;
+    --purple-dim:#6d28d9;
+    --glow: rgba(168,85,247,0.55);
+    --stroke: rgba(168,85,247,0.28);
+    --stroke-soft: rgba(168,85,247,0.14);
+    --text:#f3f1f6;
+    --text-dim:#8d879a;
+    --text-faint:#5a5563;
+    --accent: #a855f7;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background-color:#020203;
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(232,168,85,0.08), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,0.025), transparent 38%);
+  }
+  /* background-color is now set continuously by JS on scroll (a weighted
+     blend of neighboring sections), not switched by CSS class — that's
+     what makes it flow instead of stepping */
+
+  /* one glow layer per section, stacked — JS fades each one's opacity
+     continuously based on scroll position, so they cross-fade smoothly
+     instead of popping between states */
+  #mood{position:fixed; inset:0; z-index:0; pointer-events:none;}
+  #mood .layer{position:absolute; inset:0; opacity:0; will-change:opacity;}
+  #mood .l-stats{background: radial-gradient(ellipse 70% 50% at 50% 20%, rgba(168,85,247,0.22), transparent 65%);}
+  #mood .l-features{background: radial-gradient(ellipse 60% 80% at 15% 50%, rgba(255,255,255,0.05), transparent 60%);}
+  #mood .l-steps{background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(168,85,247,0.3), transparent 70%);}
+  #mood .l-showcase{background: radial-gradient(ellipse 70% 50% at 85% 50%, rgba(200,190,220,0.08), transparent 65%);}
+  #mood .l-cta{background: radial-gradient(ellipse 90% 70% at 50% 60%, rgba(168,85,247,0.4), transparent 75%);}
+
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+    letter-spacing:-0.02em;
+  }
+
+  section{position:relative; z-index:2;}
+
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 24px !important; position:fixed; top:0; left:0; right:0; z-index:20;
+    background:rgba(2,2,3,0.72);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    width:100%;
+    min-height:48px !important;
+    height:48px !important;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600; font-size:15px; letter-spacing:0.02em;
+    color:var(--text);
+  }
+  .brand .dot{width:6px; height:6px; border-radius:50%; background:var(--purple-bright); box-shadow:0 0 10px var(--glow);}
+  .brand .sub{color:var(--text-faint); font-weight:400; font-size:13px; font-family:'Inter',sans-serif;}
+  .brand-img{height:56px; width:auto; display:block; margin-top:0; transition:transform .2s ease;}
+  .nav-cta,
+  .nav-auth{
+    font-size:13px; font-weight:500; color:var(--text-dim);
+    border:1px solid var(--stroke); padding:7px 12px; border-radius:8px;
+    text-decoration:none; transition:.25s;
+    display:inline-flex; align-items:center; justify-content:center;
+    line-height:1;
+  }
+  .nav-auth{
+    color:var(--text);
+    background:rgba(255,255,255,0.04);
+    border-color:rgba(255,255,255,0.12);
+    margin-right:8px;
+  }
+  .nav-actions{display:flex; align-items:center; gap:8px;}
+  .nav-cta:hover, .nav-auth:hover{color:var(--text); border-color:var(--purple); box-shadow:0 0 16px -4px var(--glow);}
+  .nav-cta:hover{color:var(--text); border-color:var(--purple); box-shadow:0 0 16px -4px var(--glow);}
+
+  /* HERO — now uses the same full-bleed EXE hero language as the main homepage */
+  .hero{
+    width:100vw !important; max-width:none !important; margin:0 0 0 calc(50% - 50vw) !important;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    text-align:center; padding:0 24px 40px !important; position:relative; overflow:hidden;
+    left:0; right:0;
+    background:linear-gradient(180deg, #06050a 0%, #0a0910 100%);
+  }
+  .hero-logo-wrap {
+    position:absolute; top:0; left:0; right:0; height:min(65vh, 560px); display:flex; align-items:center; justify-content:center;
+    z-index:0;
+  }
+  .hero-logo-img {
+    width:100vw; max-width:none; height:100%; object-fit:cover; object-position:center top; opacity:0.9;
+    filter:drop-shadow(0 16px 40px rgba(0,0,0,0.3));
+    pointer-events:none;
+  }
+  .hero-slats {
+    position:absolute; inset:0; z-index:0; pointer-events:none; display:flex; justify-content:space-between; opacity:0.45;
+  }
+  .hero-slats span {
+    width:2px; height:100%; background:linear-gradient(180deg, transparent, rgba(255,255,255,0.22) 40%, transparent 90%);
+  }
+  .hero > * { position:relative; z-index:1; }
+  .hero-content {
+    width:100% !important; max-width:none !important; display:flex; flex-direction:column; align-items:center; text-align:center;
+    padding:0 !important;
+    position:relative; z-index:2;
+  }
+  .eyebrow{
+    font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--purple-bright); font-weight:500; margin-bottom:22px;
+    opacity:0.9;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before {
+    content:'';
+    width:16px; height:1px;
+    background:var(--purple-bright);
+    display:block;
+  }
+  .hero-content .eyebrow::before {
+    display:none;
+  }
+  #model-stage{
+    width:min(560px, 84vw); height:min(360px, 42vh);
+    position:relative; cursor:grab; margin:0 0 -20px;
+    border:none; border-radius:0; background:transparent;
+    box-shadow:none; overflow:visible; opacity:0.95;
+  }
+  #model-stage:active{cursor:grabbing;}
+  #model-stage canvas{width:100%!important; height:100%!important; display:block;}
+  .hero h1{
+    font-size:clamp(38px, 6vw, 74px);
+    font-weight:700; line-height:1.02;
+    background:linear-gradient(180deg, #ffffff 0%, #cbb9f0 60%, var(--purple) 130%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.lead{
+    margin-top:14px; color:var(--text-dim); font-size:17px;
+    max-width:620px; line-height:1.7; font-weight:400;
+  }
+  .hero .actions{
+    margin:20px 0 32px; display:flex; gap:14px;
+  }
+  .btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14.5px;
+    padding:13px 26px; border-radius:9px; text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px; transition:.25s;
+    cursor:pointer; border:1px solid transparent;
+  }
+  .btn-primary{
+    background:linear-gradient(155deg, var(--purple-bright), var(--purple-dim));
+    color:#fff; border:1px solid rgba(255,255,255,0.16);
+    box-shadow:0 0 24px -6px var(--glow), inset 0 0 12px -8px rgba(255,255,255,0.4);
+  }
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 0 30px -4px var(--glow), inset 0 0 18px -6px var(--glow);}
+  .btn-ghost{
+    background:rgba(255,255,255,0.02); color:var(--text);
+    border:1px solid var(--stroke);
+  }
+  .btn-ghost:hover{border-color:var(--purple); box-shadow:0 0 16px -4px var(--glow);}
+  .drag-hint{
+    margin-top:14px; font-size:12px; color:var(--text-faint);
+    letter-spacing:0.03em;
+  }
+
+  .hero-surface {
+    margin-top:16px;
+    padding:12px 18px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);
+    color:var(--text-dim);
+    font-size:13px;
+  }
+
+  /* TICKER */
+  .ticker-wrap{
+    width:100%; border-top:1px solid var(--stroke-soft); border-bottom:1px solid var(--stroke-soft);
+    padding:2px 0; overflow:hidden; margin-top:0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .ticker-track{
+    display:flex; gap:14px; width:max-content;
+    animation: ticker 34s linear infinite;
+  }
+  .ticker-track span{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; font-weight:600; letter-spacing:0.03em;
+    color:var(--text-dim); white-space:nowrap;
+    border:1px solid var(--stroke); border-radius:999px;
+    padding:8px 16px;
+  }
+  .ticker-track span::before{content:"◆"; color:var(--purple-bright); font-size:9px;}
+  @keyframes ticker{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .section-head{
+    text-align:center; max-width:640px; margin:0 auto 56px;
+    padding:0 24px; position:relative; z-index:2;
+  }
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{font-size:clamp(28px,4vw,42px); font-weight:600;}
+  .section-head p{color:var(--text-dim); margin-top:14px; font-size:15.5px; line-height:1.6;}
+
+  /* ===== STATS — thin vertical scan-beams, contained to this band only ===== */
+  .stats{padding:0 24px 6px; max-width:1180px; margin:0 auto; overflow:hidden;}
+  .stats-fx{position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;}
+  .stats-fx .beam{
+    position:absolute; top:-30%; height:160%; width:1px;
+    background:linear-gradient(to bottom, transparent, var(--purple) 45%, transparent 85%);
+    opacity:0.3; animation: beam-pulse 5s ease-in-out infinite;
+  }
+  @keyframes beam-pulse{ 0%,100%{opacity:0.12;} 50%{opacity:0.4;} }
+  .stats-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--stroke-soft); border:1px solid var(--stroke-soft); border-radius:16px;
+    overflow:hidden; position:relative; z-index:1;
+  }
+  .stat-card{background:var(--bg-elev); padding:26px 20px; text-align:center;}
+  .stat-card .num{font-family:'Space Grotesk', sans-serif; font-size:26px; font-weight:700; color:var(--purple-bright);}
+  .stat-card .label{font-size:12.5px; color:var(--text-dim); margin-top:6px;}
+
+  /* ===== FEATURES — soft parallax orbs behind the grid ===== */
+  .features{padding:20px 24px 20px; max-width:1180px; margin:0 auto; position:relative; overflow:hidden;}
+  .features-fx{position:absolute; inset:0; z-index:0; pointer-events:none;}
+  .orb{
+    position:absolute; border-radius:50%; filter:blur(50px);
+    opacity:0.5; will-change:transform;
+  }
+  .orb1{width:280px; height:280px; background:radial-gradient(circle, rgba(168,85,247,0.35), transparent 70%); top:-60px; left:-80px;}
+  .orb2{width:220px; height:220px; background:radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%); bottom:0; right:-60px;}
+  .feature-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+    background:var(--stroke-soft); border:1px solid var(--stroke-soft); border-radius:16px;
+    overflow:hidden; position:relative; z-index:1;
+  }
+  .feature-card{background:var(--bg-elev); padding:32px 28px; position:relative; transition:.3s background;}
+  .feature-card:hover{background:rgba(255,255,255,0.025);}
+  .feature-card.featured{
+    grid-column:span 3; background:var(--bg-elev); padding:44px 40px;
+    display:flex; align-items:center; justify-content:space-between; gap:40px;
+  }
+  .feature-card.featured .ftxt{flex:1;}
+  .feature-card.featured .ftag{
+    display:inline-block; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--purple-bright); border:1px solid var(--stroke); padding:5px 10px;
+    border-radius:6px; margin-bottom:16px;
+  }
+  .feature-card.featured h3{font-size:26px; margin-bottom:10px; font-weight:600;}
+  .feature-card.featured p{color:var(--text-dim); font-size:15px; line-height:1.6; max-width:440px;}
+  .mock-url{
+    flex-shrink:0; background:#000; border:1px solid var(--stroke); border-radius:10px;
+    padding:16px 20px; font-family:'Space Grotesk',monospace; font-size:13px;
+    color:var(--purple-bright); box-shadow:0 0 30px -8px var(--glow); white-space:nowrap;
+  }
+  .mock-url span{color:var(--text-faint);}
+  .feature-card .ficon{
+    width:34px; height:34px; border-radius:8px; border:1px solid var(--stroke);
+    display:flex; align-items:center; justify-content:center; margin-bottom:18px;
+    color:var(--purple-bright); font-size:16px;
+  }
+  .feature-card h4{font-size:16.5px; font-weight:600; margin-bottom:9px;}
+  .feature-card p{font-size:13.8px; color:var(--text-dim); line-height:1.55;}
+
+  /* ===== STEPS — pulsing concentric rings behind the numbers ===== */
+  .steps{padding:20px 24px 36px; max-width:1000px; margin:0 auto; position:relative; overflow:hidden;}
+  .steps-fx{position:absolute; inset:0; z-index:0; pointer-events:none; display:flex; align-items:center; justify-content:center;}
+  .ring{position:absolute; border:1px solid var(--stroke-soft); border-radius:50%; animation: ring-pulse 4.5s ease-out infinite;}
+  .ring.r1{width:260px; height:260px; animation-delay:0s;}
+  .ring.r2{width:420px; height:420px; animation-delay:1.5s;}
+  .ring.r3{width:580px; height:580px; animation-delay:3s;}
+  @keyframes ring-pulse{ 0%{opacity:0.5; transform:scale(0.85);} 100%{opacity:0; transform:scale(1.12);} }
+  .steps-row{display:grid; grid-template-columns:repeat(3, 1fr); gap:0; position:relative; z-index:1;}
+  .steps-row::before{
+    content:""; position:absolute; top:26px; left:12%; right:12%; height:1px;
+    background:linear-gradient(90deg, transparent, var(--stroke) 15%, var(--stroke) 85%, transparent);
+  }
+  .step{text-align:center; padding:0 20px; position:relative;}
+  .step .step-num{
+    width:52px; height:52px; margin:0 auto 20px; border-radius:50%;
+    border:1px solid var(--stroke); background:var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px;
+    color:var(--purple-bright); box-shadow:0 0 18px -6px var(--glow); position:relative; z-index:2;
+  }
+  .step h4{font-size:16px; font-weight:600; margin-bottom:8px;}
+  .step p{font-size:13.8px; color:var(--text-dim); line-height:1.6;}
+
+  /* ===== SHOWCASE — slow diagonal light sweep, contained ===== */
+  .showcase{padding:20px 24px 40px; max-width:1180px; margin:0 auto; position:relative; overflow:hidden;}
+  .sweep{
+    position:absolute; top:-20%; left:-30%; width:60%; height:140%;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,0.05) 45%, rgba(168,85,247,0.09) 50%, transparent 60%);
+    animation: sweep-move 9s ease-in-out infinite; pointer-events:none; z-index:0;
+  }
+  @keyframes sweep-move{ 0%,100%{transform:translateX(0);} 50%{transform:translateX(220%);} }
+  .showcase-grid{display:grid; grid-template-columns:1.1fr 1fr; gap:60px; align-items:center; position:relative; z-index:1;}
+  .showcase-panel{
+    border:1px solid var(--stroke); border-radius:16px; background:var(--bg-elev);
+    padding:6px; box-shadow:0 0 50px -20px var(--glow); transition:box-shadow .3s ease, border-color .3s ease;
+    will-change:transform;
+  }
+  .showcase-panel-inner{
+    border-radius:11px; background:linear-gradient(160deg, #0d0d12, #08080b);
+    padding:30px; min-height:280px; display:flex; flex-direction:column; gap:14px;
+  }
+  .theme-swatch-row{display:flex; gap:10px;}
+  .swatch{width:38px; height:38px; border-radius:8px; border:2px solid transparent; cursor:pointer; transition:transform .15s ease, border-color .15s ease;}
+  .swatch:hover{transform:translateY(-2px);}
+  .swatch.active{border-color:#fff;}
+  .fake-line{height:9px; border-radius:5px; background:rgba(255,255,255,0.06); transition:background .3s ease;}
+  .fake-line.w60{width:60%;} .fake-line.w40{width:40%;} .fake-line.w80{width:80%;}
+  .fake-line.accent{background:var(--accent); opacity:0.85;}
+  .showcase h3{font-size:15px; color:var(--purple-bright); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:16px; font-weight:600;}
+  .showcase h2{font-size:clamp(24px,3vw,34px); font-weight:600; margin-bottom:18px; line-height:1.15;}
+  .showcase p{color:var(--text-dim); font-size:15.5px; line-height:1.7; margin-bottom:26px;}
+  .mini-list{display:flex; flex-direction:column; gap:14px;}
+  .mini-list li{list-style:none; display:flex; gap:12px; align-items:flex-start; font-size:14.5px; color:var(--text-dim);}
+  .mini-list li::before{content:"—"; color:var(--purple-bright); flex-shrink:0;}
+
+  /* ===== CTA — the tile pattern lives here only, this is its one home ===== */
+  .cta-final{padding:40px 24px 40px; text-align:center; position:relative; overflow:hidden;}
+  .cta-tiles{
+    position:absolute; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(45deg, rgba(168,85,247,0.45) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(168,85,247,0.45) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(168,85,247,0.45) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(168,85,247,0.45) 75%);
+    background-size: 64px 64px;
+    background-position: 0 0, 0 32px, 32px -32px, -32px 0px;
+    opacity:0.06;
+    -webkit-mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, #000 30%, transparent 85%);
+    mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, #000 30%, transparent 85%);
+    animation: tile-drift 26s linear infinite;
+  }
+  @keyframes tile-drift{
+    from{ background-position: 0 0, 0 32px, 32px -32px, -32px 0px; }
+    to{ background-position: 64px 64px, 64px 96px, 96px 32px, 32px 64px; }
+  }
+  .cta-final > *{position:relative; z-index:1;}
+  .cta-final h2{font-size:clamp(30px,5vw,50px); font-weight:700; margin-bottom:18px;}
+  .cta-final p{color:var(--text-dim); max-width:460px; margin:0 auto 38px; font-size:16px; line-height:1.6;}
+  .cta-final .actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+  .btn-lg{padding:16px 32px; font-size:15.5px;}
+
+  footer{
+    border-top:1px solid var(--stroke-soft); padding:32px 48px;
+    display:flex; justify-content:space-between; align-items:center;
+    color:var(--text-faint); font-size:13px;
+  }
+  footer .brand{font-size:13px;}
+  footer .brand-img{height:140px;}
+
+  @media (max-width:860px){
+    .feature-grid{grid-template-columns:1fr;}
+    .feature-card.featured{grid-column:span 1; flex-direction:column; align-items:flex-start;}
+    .showcase-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:repeat(2, 1fr);}
+    .steps-row{grid-template-columns:1fr; gap:36px;}
+    .steps-row::before{display:none;}
+    nav{padding:22px 20px;}
+    .brand-img{height:72px; margin-top:0;}
+  }
+</style>
+</head>
+<body>
+
+<div id="mood">
+  <div class="layer l-stats"></div>
+  <div class="layer l-features"></div>
+  <div class="layer l-steps"></div>
+  <div class="layer l-showcase"></div>
+  <div class="layer l-cta"></div>
+</div>
+
+<nav>
+  <div class="brand"><img src="/static/rebloxed/RebloxedBanner.png" alt="Rebloxed" class="brand-img"></div>
+  <div class="nav-actions">
+    <a class="nav-auth" href="/auth/login" data-auth-slot="signin">Login</a>
+    <a class="nav-cta" href="javascript:void(0)" onclick="return false;" aria-disabled="true">Coming Soon</a>
+  </div>
+</nav>
+
+<section class="hero" data-theme="hero">
+  <div class="hero-logo-wrap">
+    <img src="/static/assets/logo/exe-hero-logo.png" alt="EXE Development" class="hero-logo-img">
+  </div>
+  <div class="hero-slats">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="hero-content">
+    <div id="model-stage"></div>
+    <div class="eyebrow">EXE Development presents</div>
+    <h1>Rebloxed</h1>
+    <div class="actions">
+      <a class="btn btn-primary" href="javascript:void(0)" onclick="return false;" aria-disabled="true">Coming Soon</a>
+      <a class="btn btn-ghost" href="#features">See what it does</a>
+    </div>
+  </div>
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="ticker"></div>
+  </div>
+</section>
+
+<section class="stats reveal" data-theme="stats">
+  <div class="stats-fx" id="statsFx"></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="num">100%</div><div class="label">Free to install</div></div>
+    <div class="stat-card"><div class="num">6+</div><div class="label">Built-in tools</div></div>
+    <div class="stat-card"><div class="num">1-click</div><div class="label">Profile setup</div></div>
+    <div class="stat-card"><div class="num">0</div><div class="label">Robux required</div></div>
+  </div>
+</section>
+
+<section class="features" id="features" data-theme="features">
+  <div class="features-fx">
+    <div class="orb orb1" data-parallax="0.15"></div>
+    <div class="orb orb2" data-parallax="-0.1"></div>
+  </div>
+  <div class="section-head reveal">
+    <div class="eyebrow">Features</div>
+    <h2>Everything your profile was missing</h2>
+    <p>Rebloxed starts with your profile page, then quietly upgrades the rest of Roblox around it.</p>
+  </div>
+
+  <div class="feature-grid reveal">
+    <div class="feature-card featured">
+      <div class="ftxt">
+        <span class="ftag">Flagship feature</span>
+        <h3>Custom profile pages</h3>
+        <p>Visit any Roblox profile with Rebloxed installed and get redirected to that person's own page instead — their layout, their links, their vibe, still pulling live avatar and stats straight from Roblox.</p>
+      </div>
+      <div class="mock-url"><span>roblox.com/users/1234</span> → exedevelopment.com/users/1234</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="ficon">◆</div>
+      <h4>Avatar sandbox</h4>
+      <p>Try on any outfit combo without spending Robux or touching your real avatar.</p>
+    </div>
+    <div class="feature-card">
+      <div class="ficon">◆</div>
+      <h4>Live trade values</h4>
+      <p>See item and total trade values right on the trade window, updated in real time.</p>
+    </div>
+    <div class="feature-card">
+      <div class="ficon">◆</div>
+      <h4>Server filters</h4>
+      <p>Sort servers by player count, ping, or region — find an empty one in one click.</p>
+    </div>
+    <div class="feature-card">
+      <div class="ficon">◆</div>
+      <h4>Quick search</h4>
+      <p>Jump to any player, game, or group without waiting on a full page load.</p>
+    </div>
+    <div class="feature-card">
+      <div class="ficon">◆</div>
+      <h4>Trade protection</h4>
+      <p>Set your own thresholds and auto-decline trades that fall short of them.</p>
+    </div>
+    <div class="feature-card">
+      <div class="ficon">◆</div>
+      <h4>EXE account sync</h4>
+      <p>Log in once with your EXE account and carry your profile, settings, and theme across every EXE product.</p>
+    </div>
+  </div>
+</section>
+
+<section class="steps" data-theme="steps">
+  <div class="steps-fx">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+  </div>
+  <div class="section-head reveal">
+    <div class="eyebrow">How it works</div>
+    <h2>Up and running in under a minute</h2>
+  </div>
+  <div class="steps-row reveal">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h4>Add to Chrome</h4>
+      <p>Install Rebloxed from the Chrome Web Store — no account needed to get started.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h4>Set up your page</h4>
+      <p>Pick a theme, add your links, and Rebloxed pulls in your live Roblox stats automatically.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h4>Share your profile</h4>
+      <p>Anyone with Rebloxed installed sees your custom page the moment they visit your profile.</p>
+    </div>
+  </div>
+</section>
+
+<section class="showcase" data-theme="showcase">
+  <div class="sweep"></div>
+  <div class="showcase-grid">
+    <div class="reveal">
+      <h3>Make it yours</h3>
+      <h2>Themes, layouts, and links — set up once, seen by everyone.</h2>
+      <p>Pick a background, accent color, and layout for your page. Add your Discord, YouTube, socials, and whatever else belongs on a profile that's actually yours.</p>
+      <ul class="mini-list">
+        <li>Custom backgrounds, accent colors, and fonts</li>
+        <li>Unlimited social + game links</li>
+        <li>Live Roblox stats pulled in automatically</li>
+        <li>Works instantly for anyone else with Rebloxed installed</li>
+      </ul>
+    </div>
+    <div class="showcase-panel reveal" data-parallax="-0.06">
+      <div class="showcase-panel-inner">
+        <div class="theme-swatch-row" id="swatchRow">
+          <div class="swatch active" data-color="#a855f7" style="background:#a855f7;"></div>
+          <div class="swatch" data-color="#38bdf8" style="background:#38bdf8;"></div>
+          <div class="swatch" data-color="#f472b6" style="background:#f472b6;"></div>
+          <div class="swatch" data-color="#4ade80" style="background:#4ade80;"></div>
+          <div class="swatch" data-color="#f59e0b" style="background:#f59e0b;"></div>
+        </div>
+        <div class="fake-line w80 accent" id="line1"></div>
+        <div class="fake-line w60"></div>
+        <div class="fake-line w40"></div>
+        <div style="height:1px; background:var(--stroke-soft); margin:6px 0;"></div>
+        <div class="fake-line w60 accent" id="line2"></div>
+        <div class="fake-line w80"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final" id="get" data-theme="cta">
+  <div class="cta-tiles"></div>
+  <h2>Get Rebloxed.</h2>
+  <p>Free to install. Set up your page in under a minute. New EXE features ship in as they're built.</p>
+  <div class="actions">
+    <a class="btn btn-primary btn-lg" href="javascript:void(0)" onclick="return false;" aria-disabled="true">Coming Soon</a>
+    <a class="btn btn-ghost btn-lg" href="#">Download for other browsers</a>
+  </div>
+</section>
+
+<footer>
+  <div class="brand"><img src="/static/rebloxed/RebloxedBanner.png" alt="Rebloxed" class="brand-img"></div>
+  <div>© 2026 EXE Development</div>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const stage = document.getElementById('model-stage');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(19, stage.clientWidth / stage.clientHeight, 0.1, 100);
+camera.position.set(0, 0, 6);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(stage.clientWidth, stage.clientHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.6;
+stage.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x2a1a3a, 1.8));
+scene.add(new THREE.AmbientLight(0x3a2650, 1.2));
+const key = new THREE.DirectionalLight(0xffffff, 2.2);
+key.position.set(3, 4, 5);
+scene.add(key);
+const key2 = new THREE.DirectionalLight(0xd9c8f0, 1.4);
+key2.position.set(-2, -1, 4);
+scene.add(key2);
+// front-facing purple fill so the model actually reads instead of just
+// catching light on its rim edges
+const fill = new THREE.PointLight(0xa855f7, 6, 30);
+fill.position.set(0, 1, 6);
+scene.add(fill);
+const rim = new THREE.PointLight(0xa855f7, 5, 25);
+rim.position.set(-4, 1, -3);
+scene.add(rim);
+const rim2 = new THREE.PointLight(0x7c3aed, 4, 25);
+rim2.position.set(3, -2, -3);
+scene.add(rim2);
+
+let model;
+const group = new THREE.Group();
+scene.add(group);
+
+new GLTFLoader().load('/static/rebloxed/rebloxed-logo.glb', (gltf) => {
+  model = gltf.scene;
+  const box = new THREE.Box3().setFromObject(model);
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  model.position.sub(center);
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const scale = 1.8 / maxDim;
+  model.scale.setScalar(scale);
+  group.add(model);
+}, undefined, (err) => {
+  console.error('Model failed to load', err);
+});
+
+let isDragging = false;
+let prevX = 0, prevY = 0;
+let velocityY = 0.006;
+let userVelX = 0, userVelY = 0;
+
+stage.addEventListener('pointerdown', (e) => {
+  isDragging = true;
+  prevX = e.clientX;
+  prevY = e.clientY;
+  stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - prevX;
+  const dy = e.clientY - prevY;
+  prevX = e.clientX;
+  prevY = e.clientY;
+  userVelY = dx * 0.005;
+  userVelX = dy * 0.005;
+  group.rotation.y += userVelY;
+  group.rotation.x += userVelX;
+});
+window.addEventListener('pointerup', () => { isDragging = false; });
+
+function animate(){
+  requestAnimationFrame(animate);
+  if (!isDragging){
+    userVelX *= 0.92;
+    userVelY += (velocityY - userVelY) * 0.02;
+    group.rotation.y += userVelY;
+    group.rotation.x += userVelX;
+    group.rotation.x *= 0.95;
+  } else {
+    userVelY *= 0.9;
+  }
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = stage.clientWidth / stage.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(stage.clientWidth, stage.clientHeight);
+});
+</script>
+
+<script>
+  // scrolling feature ticker
+  const tickerItems = [
+    'Custom profile pages', 'Avatar sandbox', 'Live trade values', 'Server filters',
+    'Quick search', 'Trade protection', 'EXE account sync', 'Theme customization'
+  ];
+  const track = document.getElementById('ticker');
+  const html = tickerItems.map(t => `<span>${t}</span>`).join('');
+  track.innerHTML = html + html;
+
+  // stats section — a handful of thin vertical beams, contained to that band only
+  const statsFx = document.getElementById('statsFx');
+  const BEAM_COUNT = 7;
+  for (let i = 0; i < BEAM_COUNT; i++) {
+    const b = document.createElement('div');
+    b.className = 'beam';
+    b.style.left = (8 + i * (84 / (BEAM_COUNT - 1))) + '%';
+    b.style.animationDelay = (i * 0.6) + 's';
+    statsFx.appendChild(b);
+  }
+
+  // continuous scroll-driven mood blend — no discrete on/off switch, so
+  // colors and glow layers flow smoothly instead of stepping between states
+  const moodStops = [
+    { theme: 'hero',     el: document.querySelector('[data-theme="hero"]'),     rgb: [2, 2, 3] },
+    { theme: 'stats',    el: document.querySelector('[data-theme="stats"]'),    rgb: [10, 5, 18] },
+    { theme: 'features', el: document.querySelector('[data-theme="features"]'), rgb: [5, 5, 6] },
+    { theme: 'steps',    el: document.querySelector('[data-theme="steps"]'),    rgb: [13, 6, 32] },
+    { theme: 'showcase', el: document.querySelector('[data-theme="showcase"]'), rgb: [8, 8, 10] },
+    { theme: 'cta',      el: document.querySelector('[data-theme="cta"]'),      rgb: [21, 10, 38] },
+  ];
+  const moodLayers = {
+    stats: document.querySelector('.l-stats'),
+    features: document.querySelector('.l-features'),
+    steps: document.querySelector('.l-steps'),
+    showcase: document.querySelector('.l-showcase'),
+    cta: document.querySelector('.l-cta'),
+  };
+
+  function updateMood(){
+    const vh = window.innerHeight;
+    const center = vh / 2;
+    let weights = moodStops.map(s => {
+      const rect = s.el.getBoundingClientRect();
+      const mid = rect.top + rect.height / 2;
+      const dist = Math.abs(mid - center);
+      // triangular falloff — full weight at center, zero past one viewport away
+      return Math.max(0, 1 - dist / vh);
+    });
+    const total = weights.reduce((a, b) => a + b, 0) || 1;
+    weights = weights.map(w => w / total);
+
+    let r = 0, g = 0, b = 0;
+    moodStops.forEach((s, i) => {
+      r += s.rgb[0] * weights[i];
+      g += s.rgb[1] * weights[i];
+      b += s.rgb[2] * weights[i];
+      if (moodLayers[s.theme]) moodLayers[s.theme].style.opacity = weights[i];
+    });
+    document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+  }
+  window.addEventListener('scroll', () => requestAnimationFrame(updateMood), { passive: true });
+  window.addEventListener('resize', updateMood);
+  updateMood();
+
+  // scroll-reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // interactive theme swatches
+  const swatches = document.querySelectorAll('.swatch');
+  const panel = document.querySelector('.showcase-panel');
+  swatches.forEach(sw => {
+    sw.addEventListener('click', () => {
+      swatches.forEach(s => s.classList.remove('active'));
+      sw.classList.add('active');
+      const color = sw.dataset.color;
+      document.documentElement.style.setProperty('--accent', color);
+      panel.style.borderColor = color;
+      panel.style.boxShadow = `0 0 50px -20px ${color}88`;
+    });
+  });
+
+  // parallax — elements tagged data-parallax move at a different rate than
+  // scroll as they pass through the viewport, only while actually visible
+  const parallaxEls = Array.from(document.querySelectorAll('[data-parallax]'));
+  function updateParallax(){
+    const vh = window.innerHeight;
+    parallaxEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > vh) return; // not in view, skip
+      const centerOffset = (rect.top + rect.height / 2) - vh / 2;
+      const speed = parseFloat(el.dataset.parallax) || 0;
+      el.style.transform = `translateY(${centerOffset * speed}px)`;
+    });
+  }
+  window.addEventListener('scroll', () => requestAnimationFrame(updateParallax), { passive: true });
+  updateParallax();
+</script>
+<script src="/static/js/auth-nav.js" defer></script>
+
+</body>
+</html>

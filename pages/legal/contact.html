@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — EXE Development</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #120d0a;
+    --panel: rgba(22, 18, 15, 0.92);
+    --panel-border: rgba(255,255,255,0.08);
+    --text: #f5ede1;
+    --text-muted: rgba(245,237,225,0.66);
+    --accent: #b794f6;
+    --accent-soft: rgba(183,148,246,0.15);
+    --button: #7c3aed;
+    --button-hover: #8b5cf6;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background:
+      repeating-linear-gradient(91deg, rgba(0,0,0,0.12) 0px, transparent 1.5px, transparent 3px, rgba(255,255,255,0.02) 4px, transparent 6px, transparent 14px),
+      repeating-linear-gradient(91deg, transparent 0px, rgba(0,0,0,0.14) 60px, transparent 62px, transparent 140px),
+      var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  a { color: inherit; text-decoration: none; }
+  .contact-shell { width: min(420px, calc(100% - 40px)); position: relative; }
+  .contact-card {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 28px;
+    padding: 26px 20px;
+    box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+  }
+  .contact-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 38%);
+    pointer-events: none;
+  }
+  .contact-header { display: grid; gap: 10px; margin-bottom: 22px; }
+  .contact-title { font-family: 'Fraunces', serif; font-size: 28px; line-height: 1.1; }
+  .contact-copy { color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+  .invite-card {
+    display: grid;
+    gap: 18px;
+    padding: 20px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .invite-top { display: flex; align-items: center; gap: 14px; }
+  .invite-dot { width: 44px; height: 44px; border-radius: 16px; display: grid; place-items: center; background: linear-gradient(145deg, rgba(183,148,246,0.35), rgba(124,58,237,0.18)); overflow: hidden; }
+  .invite-icon { display: none; width: 100%; height: 100%; object-fit: cover; }
+  .invite-dot svg { width: 24px; height: 24px; color: #fff; }
+  .invite-meta { display: grid; gap: 4px; }
+  .invite-name { font-size: 18px; font-weight: 700; }
+  .invite-sub { color: var(--text-muted); font-size: 13px; }
+  .invite-description { color: var(--text-muted); font-size: 14px; line-height: 1.65; }
+  .invite-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+  .invite-stat { flex: 1 1 130px; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+  .invite-stat strong { display: block; font-size: 15px; margin-bottom: 4px; }
+  .invite-stat span { color: var(--text-muted); font-size: 12px; }
+  .join-button { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px 18px; border-radius: 100px; background: linear-gradient(155deg, var(--accent), var(--button)); color: #fff; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .join-button:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(124,58,237,0.28); }
+  .contact-footer { margin-top: 18px; display: grid; gap: 10px; text-align: center; font-size: 13px; color: var(--text-muted); }
+  .contact-footer a { color: var(--accent); }
+
+  .page-transition {
+    position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+    background: radial-gradient(circle at center, rgba(183,148,246,0.16), rgba(18,13,10,0.96));
+    opacity: 0; transition: opacity 320ms ease;
+  }
+  .page-transition.is-visible { opacity: 1; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    transition: opacity 700ms cubic-bezier(.2,.8,.2,1), transform 700ms cubic-bezier(.2,.8,.2,1);
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+
+  body { opacity: 1; transition: opacity 320ms ease; }
+  body.page-enter { opacity: 1; }
+  body.page-exit { opacity: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal, .page-transition, body { transition: none !important; }
+  }
+
+  @media (max-width: 520px) {
+    .contact-shell { width: min(100%, calc(100% - 32px)); }
+    .contact-card { padding: 22px 16px; }
+    .invite-stats { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+  <main class="contact-shell">
+    <div class="contact-card">
+      <div class="contact-header">
+        <h1 class="contact-title">Join our Discord</h1>
+        <p class="contact-copy">Connect with our community, get support, and stay updated on EXE Development.</p>
+      </div>
+
+      <div class="invite-card">
+        <div class="invite-top">
+          <div class="invite-dot">
+            <img class="invite-icon" src="" alt="Server icon" width="44" height="44" style="border-radius:16px;display:none;object-fit:cover;" />
+            <svg class="invite-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 6.5L16 14l-2-1.5-2 1.5-1.5-7.5"/><path d="M6.5 6.5l1 7.5 2-1.5 2 1.5 1-7.5"/></svg>
+          </div>
+          <div class="invite-meta">
+            <div class="invite-name">Loading server info…</div>
+            <div class="invite-sub">Discord invite • open community • fast support</div>
+          </div>
+        </div>
+        <p class="invite-description">Join our server to chat with support agents, share feedback, and keep up with new features and announcements in a polished EXE-style experience.</p>
+        <div class="invite-stats">
+          <div class="invite-stat"><strong class="invite-stat-count">Loading…</strong><span>Members</span></div>
+          <div class="invite-stat"><strong class="invite-stat-online">Loading…</strong><span>Online</span></div>
+          <div class="invite-stat"><strong class="invite-stat-channels">Loading…</strong><span>Channels</span></div>
+        </div>
+        <a class="join-button" href="https://discord.gg/X9p5uk4YJQ" target="_blank" rel="noopener">Join on Discord</a>
+      </div>
+
+      <div class="contact-footer">
+        <p>If the invite doesn’t open, copy and paste this link into your browser:</p>
+        <a class="invite-link" href="https://discord.gg/X9p5uk4YJQ" target="_blank" rel="noopener">https://discord.gg/X9p5uk4YJQ</a>
+        <a href="/">← Back home</a>
+      </div>
+    </div>
+  </main>
+  <div class="page-transition" aria-hidden="true"></div>
+  <script>
+    document.body.classList.add('page-enter');
+    const transitionOverlay = document.querySelector('.page-transition');
+    const revealTargets = document.querySelectorAll('.contact-shell, .contact-card, .contact-header, .invite-card, .contact-footer');
+
+    revealTargets.forEach((el, index) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = `${index * 70}ms`;
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealTargets.forEach((el) => revealObserver.observe(el));
+
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const href = link.getAttribute('href') || '';
+      const isLocal = href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('#') && !href.startsWith('javascript:') && !link.hasAttribute('target');
+      if (!isLocal) return;
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.body.classList.add('page-exit');
+        transitionOverlay.classList.add('is-visible');
+        setTimeout(() => { window.location.href = href; }, 260);
+      });
+    });
+
+    const apiUrl = 'https://exe-se-api.onrender.com/api/server';
+    const inviteName = document.querySelector('.invite-name');
+    const inviteSub = document.querySelector('.invite-sub');
+    const inviteCount = document.querySelector('.invite-stat-count');
+    const inviteOnline = document.querySelector('.invite-stat-online');
+    const inviteChannels = document.querySelector('.invite-stat-channels');
+    const inviteIcon = document.querySelector('.invite-icon');
+    const invitePlaceholder = document.querySelector('.invite-placeholder');
+
+    const renderServerData = (data) => {
+      if (!data) return;
+
+      inviteName.textContent = data.name || 'EXE Development';
+      inviteSub.textContent = data.description || 'Live Discord server stats';
+      inviteCount.textContent = data.memberCount ? data.memberCount.toLocaleString() : '0';
+      inviteOnline.textContent = data.onlineCount ? data.onlineCount.toLocaleString() : '0';
+      inviteChannels.textContent = data.channelCount ? data.channelCount.toLocaleString() : '0';
+
+      if (data.icon) {
+        inviteIcon.src = data.icon;
+        inviteIcon.style.display = 'block';
+        invitePlaceholder.style.display = 'none';
+      }
+    };
+
+    const fetchServerData = () => {
+      fetch(apiUrl)
+        .then((response) => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then((data) => renderServerData(data))
+        .catch(() => {
+          inviteName.textContent = 'EXE Development';
+          inviteSub.textContent = 'Live Discord server stats';
+          inviteCount.textContent = '0';
+          inviteOnline.textContent = '0';
+          inviteChannels.textContent = '0';
+        });
+    };
+
+    fetchServerData();
+    setInterval(fetchServerData, 60000);
+  </script>
+</body>
+</html>

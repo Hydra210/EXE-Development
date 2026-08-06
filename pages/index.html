@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXE Development — We build things worth building.</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #251B12;
+    --bg-deep: #1A120B;
+    --wood-light: #9C7146;
+    --wood: #7A5531;
+    --wood-dark: #543A20;
+    --wood-deepest: #1F1409;
+    --purple: #9B6FF5;
+    --purple-deep: #B794F6;
+    --purple-soft: rgba(155, 111, 245, 0.16);
+    --amber: #E8A855;
+    --amber-glow: rgba(232, 168, 85, 0.22);
+    --text: #F0E4D2;
+    --text-dim: rgba(240, 228, 210, 0.62);
+    --text-dimmer: rgba(240, 228, 210, 0.34);
+    --cream: #F5EBDA;
+    --border: rgba(240, 228, 210, 0.11);
+    --grain-dark: rgba(0, 0, 0, 0.22);
+    --grain-light: rgba(255, 220, 180, 0.05);
+    --font-display: 'Fraunces', serif;
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background:
+      repeating-linear-gradient(91deg, var(--grain-dark) 0px, transparent 1.5px, transparent 3px, var(--grain-light) 4px, transparent 6px, transparent 14px),
+      repeating-linear-gradient(91deg, transparent 0px, var(--grain-dark) 60px, transparent 62px, transparent 140px),
+      var(--bg);
+    color: var(--text); font-family: var(--font-ui);
+    min-height: 100vh; overflow-x: hidden; position: relative;
+  }
+
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(232,168,85,0.06), transparent 60%);
+  }
+
+  body::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0.04; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection { background: rgba(139,92,246,0.22); color: var(--text); }
+
+  a { color: inherit; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background:
+      repeating-linear-gradient(93deg, rgba(0,0,0,0.16) 0px, rgba(0,0,0,0.16) 1.5px, transparent 1.5px, transparent 5px, transparent 12px),
+      rgba(26, 18, 11, 0.88);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo-icon {
+    width: 34px; height: 34px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-icon svg { width: 22px; height: 22px; stroke: var(--wood-light); }
+  .nav-logo-mini-img { width: 100%; height: 100%; object-fit: contain; }
+  .nav-logo-text { font-family: var(--font-display); font-size: 19px; font-weight: 600; letter-spacing: 0.5px; color: var(--text); }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .nav-links a { font-family: var(--font-ui); font-size: 14px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--purple-deep); }
+  .nav-cta {
+    padding: 10px 22px; border-radius: 100px; color: var(--cream) !important;
+    background: linear-gradient(155deg, var(--wood-light), var(--wood-dark));
+    box-shadow: 0 4px 16px rgba(70, 49, 31, 0.3);
+    transition: all 0.2s !important; font-weight: 600 !important;
+  }
+  .nav-cta:hover { box-shadow: 0 6px 22px rgba(139,92,246,0.35); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 92vh;
+    min-height: 560px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-logo-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-logo-img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+
+  /* hero-logo-fade removed per user preference so the page texture shows through */
+
+  .hero-actions {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: auto;
+    padding-bottom: 60px;
+  }
+
+  .hero-light {
+    position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
+    width: 1100px; height: 700px; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 50% 50% at 50% 30%, var(--amber-glow), transparent 70%);
+    filter: blur(20px);
+  }
+  .hero-accent-glow {
+    position: absolute; top: 15%; right: 14%; width: 300px; height: 300px; z-index: 0; pointer-events: none;
+    background: radial-gradient(circle, var(--purple-soft), transparent 70%); filter: blur(24px);
+  }
+  .hero-slats {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
+    display: flex; justify-content: space-between; opacity: 0.5;
+  }
+  .hero-slats span {
+    width: 2px; height: 100%;
+    background: linear-gradient(180deg, transparent, var(--wood-light) 40%, transparent 90%);
+    opacity: 0.3;
+  }
+
+  .btn-primary {
+    padding: 15px 32px; font-family: var(--font-ui); font-size: 14.5px; font-weight: 600;
+    color: var(--cream); border: none; border-radius: 100px; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s;
+    background: linear-gradient(155deg, var(--wood-light), var(--wood-dark));
+    box-shadow: 0 8px 24px rgba(70, 49, 31, 0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139,92,246,0.3); }
+
+  .btn-secondary {
+    padding: 15px 32px; font-family: var(--font-ui); font-size: 14.5px; font-weight: 600;
+    background: rgba(0,0,0,0.22); color: var(--text-dim);
+    border: 1px solid var(--border); border-radius: 100px; cursor: pointer; text-decoration: none;
+    transition: all 0.25s;
+  }
+  .btn-secondary:hover { color: var(--purple-deep); border-color: var(--purple); background: rgba(0,0,0,0.35); }
+
+  .page-transition {
+    position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+    background: radial-gradient(circle at center, rgba(183,148,246,0.16), rgba(18,13,10,0.96));
+    opacity: 0; transition: opacity 320ms ease;
+  }
+  .page-transition.is-visible { opacity: 1; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+    transition: opacity 700ms cubic-bezier(.2,.8,.2,1), transform 700ms cubic-bezier(.2,.8,.2,1);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  body {
+    opacity: 1;
+    transition: opacity 320ms ease;
+  }
+  body.page-enter { opacity: 1; }
+  body.page-exit { opacity: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal, .page-transition, body { transition: none !important; }
+  }
+
+  /* ── SECTION SHARED ── */
+  section { position: relative; padding: 100px 24px; max-width: 1140px; margin: 0 auto; }
+
+  .section-label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--wood-light); display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+  }
+  .section-label::before { content: ''; width: 18px; height: 1px; background: var(--wood-light); }
+
+  section h2 {
+    font-family: var(--font-display); font-size: clamp(30px, 3.4vw, 44px);
+    font-weight: 600; letter-spacing: -0.5px; color: var(--text); line-height: 1.2; margin-bottom: 18px;
+  }
+  section .section-intro { font-size: 17px; color: var(--text-dim); max-width: 560px; line-height: 1.75; }
+
+  /* ── WHAT WE DO ── */
+  .two-col { display: grid; grid-template-columns: 1fr 0.9fr; gap: 60px; align-items: center; }
+
+  .wood-card {
+    position: relative; border-radius: 28px; overflow: hidden; padding: 44px;
+    background: linear-gradient(155deg, var(--wood-light), var(--wood-dark));
+    box-shadow: 0 20px 50px rgba(70, 49, 31, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .wood-card-grain {
+    position: absolute; inset: 0; opacity: 0.85; pointer-events: none;
+    background:
+      repeating-linear-gradient(93deg, rgba(0,0,0,0.14) 0px, rgba(0,0,0,0.14) 1.5px, transparent 1.5px, transparent 4px, rgba(255,220,180,0.05) 5px, transparent 7px, transparent 11px),
+      repeating-linear-gradient(93deg, transparent 0px, rgba(0,0,0,0.1) 40px, transparent 43px, transparent 90px);
+  }
+  .wood-card-content { position: relative; z-index: 1; }
+  .wood-card-icon {
+    width: 56px; height: 56px; border-radius: 16px; margin-bottom: 22px;
+    background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .wood-card-icon svg { width: 24px; height: 24px; stroke: var(--cream); }
+  .wood-card h3 { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--cream); margin-bottom: 12px; }
+  .wood-card p { font-size: 14.5px; color: rgba(250, 244, 233, 0.8); line-height: 1.65; }
+  .wood-card-tag {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 20px;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(250,244,233,0.65);
+  }
+  .wood-card-tag span { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); box-shadow: 0 0 6px var(--purple); }
+
+  /* ── VALUES ── */
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+  .value-card {
+    background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 24px;
+    padding: 34px 28px; transition: all 0.25s;
+  }
+  .value-card:hover { background: rgba(0,0,0,0.32); box-shadow: 0 14px 34px rgba(0,0,0,0.3); transform: translateY(-3px); }
+  .value-card-icon {
+    width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+    background: var(--purple-soft); border: 1px solid rgba(139,92,246,0.25);
+  }
+  .value-card-icon svg { width: 18px; height: 18px; stroke: var(--purple-deep); }
+  .value-card h4 { font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  .value-card p { font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+
+  /* ── EXPLORE CTA ── */
+  .explore-banner {
+    position: relative; overflow: hidden; text-align: center;
+    border-radius: 40px; padding: 90px 40px;
+    background: linear-gradient(165deg, var(--wood-light), var(--wood-dark) 60%, var(--wood-deepest));
+    box-shadow: 0 30px 70px rgba(70, 49, 31, 0.35);
+  }
+  .explore-banner-glow {
+    position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+    width: 500px; height: 400px; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse, rgba(139,92,246,0.22), transparent 70%); filter: blur(20px);
+  }
+  .explore-banner .section-label { justify-content: center; color: rgba(250,244,233,0.65); }
+  .explore-banner .section-label::before { background: rgba(250,244,233,0.5); }
+  .explore-banner h2 { position: relative; z-index: 1; color: var(--cream); margin-bottom: 18px; }
+  .explore-banner p { position: relative; z-index: 1; font-size: 16px; color: rgba(250,244,233,0.72); max-width: 480px; margin: 0 auto 36px; line-height: 1.7; }
+  .explore-banner .btn-primary { position: relative; z-index: 1; background: var(--cream); color: var(--wood-dark); box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+  .explore-banner .btn-primary:hover { box-shadow: 0 12px 34px rgba(139,92,246,0.4); }
+
+  /* ── DISCORD / COMMUNITY ── */
+  .community-card {
+    display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+    background: rgba(0,0,0,0.24); border: 1px solid var(--border); border-radius: 32px;
+    padding: 48px; box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+  }
+  .community-copy h3 { font-family: var(--font-display); font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  .community-copy p { font-size: 15px; color: var(--text-dim); max-width: 420px; line-height: 1.65; }
+  .btn-discord {
+    display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px;
+    background: var(--purple); color: #fff; border-radius: 100px; text-decoration: none;
+    font-family: var(--font-ui); font-size: 14.5px; font-weight: 600; flex-shrink: 0;
+    box-shadow: 0 10px 26px rgba(139,92,246,0.32); transition: all 0.25s;
+  }
+  .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(139,92,246,0.42); }
+  .btn-discord svg { width: 18px; height: 18px; fill: #fff; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; margin-top: 40px;
+    background:
+      repeating-linear-gradient(93deg, rgba(0,0,0,0.22) 0px, rgba(0,0,0,0.22) 1.5px, transparent 1.5px, transparent 5px, rgba(255,220,180,0.03) 6px, transparent 8px, transparent 14px),
+      var(--wood-deepest);
+    padding: 64px 48px 32px;
+  }
+  .footer-inner { max-width: 1140px; margin: 0 auto; }
+  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 32px; padding-bottom: 40px; border-bottom: 1px solid rgba(250,244,233,0.12); }
+  .footer-brand { display: flex; align-items: center; gap: 12px; }
+  .footer-brand-text { font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--cream); }
+  .footer-links { display: flex; gap: 36px; flex-wrap: wrap; }
+  .footer-links a { font-size: 14px; color: rgba(250,244,233,0.6); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--purple); }
+  .footer-bottom { padding-top: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .footer-copy { font-family: var(--font-mono); font-size: 10.5px; color: rgba(250,244,233,0.35); letter-spacing: 1px; }
+  .footer-social a {
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(250,244,233,0.18);
+    display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s;
+  }
+  .footer-social a:hover { border-color: var(--purple); box-shadow: 0 0 14px rgba(139,92,246,0.35); }
+  .footer-social svg { width: 15px; height: 15px; stroke: rgba(250,244,233,0.6); }
+
+  @media (max-width: 900px) {
+    .two-col { grid-template-columns: 1fr; }
+    .values-grid { grid-template-columns: 1fr; }
+    .community-card { flex-direction: column; text-align: center; align-items: center; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 22px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    section { padding: 64px 20px; }
+    .hero { padding: 140px 20px 80px; }
+    .wood-card, .community-card { padding: 30px; }
+    .explore-banner { padding: 56px 24px; border-radius: 28px; }
+    footer { padding: 48px 20px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="/static/assets/logo/logo-mini.png" alt="EXE" class="nav-logo-mini-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;">
+        <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/>
+        <line x1="12" y1="2" x2="12" y2="22"/>
+        <line x1="2" y1="8.5" x2="22" y2="8.5"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">EXE</span>
+  </a>
+  <div class="nav-links">
+    <a href="#what-we-do">What we do</a>
+    <a href="#values">How we work</a>
+    <a href="/auth/login" data-auth-slot="signin">Sign in</a>
+    <a href="/legal/contact">Discord</a>
+    <a href="/rebloxed" class="nav-cta">Explore Rebloxed</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-slats"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="hero-light"></div>
+  <div class="hero-accent-glow"></div>
+
+  <div class="hero-logo-wrap">
+    <img src="/static/assets/logo/exe-hero-logo.png" alt="EXE Development" class="hero-logo-img" onerror="this.style.display='none'">
+  </div>
+
+  <div class="hero-actions">
+    <a href="/rebloxed" class="btn-primary">Explore Rebloxed →</a>
+    <a href="/legal/contact" class="btn-secondary">Join our Discord</a>
+  </div>
+</div>
+
+<section id="what-we-do">
+  <div class="two-col">
+    <div>
+      <div class="section-label">What we do</div>
+      <h2>Tools for everyday life, built with a little more care.</h2>
+      <p class="section-intro">We're a development group that makes things we'd actually want to use ourselves — inside Roblox and out. If something feels clunky or missing, that's usually where we start.</p>
+    </div>
+    <div class="wood-card">
+      <div class="wood-card-grain"></div>
+      <div class="wood-card-content">
+        <div class="wood-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>Small group, real tools</h3>
+        <p>No bloat, no filler features — just things that solve an actual problem, built by people who use them.</p>
+        <div class="wood-card-tag"><span></span> Currently building: Rebloxed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="values">
+  <div class="section-label">How we work</div>
+  <h2>We'd rather explore than sit still.</h2>
+  <p class="section-intro">We like poking at new ideas — some turn into real projects, some don't, and we're okay with that either way.</p>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l1 5-4 12-4-12 1-5Z"/><path d="M8 8h8"/></svg></div>
+      <h4>We experiment</h4>
+      <p>We try a lot of different ideas and concepts before deciding what's worth pursuing further.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Z"/></svg></div>
+      <h4>We build what's useful</h4>
+      <p>Our tools exist to make everyday life easier — whether that's inside Roblox or somewhere else entirely.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div>
+      <h4>We keep exploring</h4>
+      <p>There's always something new we're poking at — new concepts, new tools, new corners of Roblox to build for.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="explore-banner">
+    <div class="explore-banner-glow"></div>
+    <div class="section-label">See it for yourself</div>
+    <h2>Curious what we're building?</h2>
+    <p>We keep this page focused on who we are — the projects live on their own. Take a look at what we've got going right now.</p>
+    <a href="/rebloxed" class="btn-primary">Explore Rebloxed →</a>
+  </div>
+</section>
+
+<section>
+  <div class="community-card">
+    <div class="community-copy">
+      <h3>Come hang out with us.</h3>
+      <p>We spend most of our time in our Discord — talking about what we're building, sharing ideas, and just hanging out.</p>
+    </div>
+    <a href="/legal/contact" class="btn-discord">
+      <svg viewBox="0 0 24 24"><path d="M20 4.4A18 18 0 0 0 15.6 3l-.3.6a15 15 0 0 1 3.7 1.3 16 16 0 0 0-14 0A15 15 0 0 1 8.7 3.6L8.4 3A18 18 0 0 0 4 4.4C1.5 8.3.9 12 1.2 15.7A18 18 0 0 0 6.7 18.4l.8-1.3a11.5 11.5 0 0 1-1.8-.9l.4-.3a13 13 0 0 0 12 0l.4.3a11.5 11.5 0 0 1-1.8.9l.8 1.3a18 18 0 0 0 5.5-2.7c.4-4.3-.6-8-2.8-11.3ZM9 13.7c-.9 0-1.6-.8-1.6-1.8S8.1 10 9 10s1.7.9 1.6 1.9c0 1-.7 1.8-1.6 1.8Zm6 0c-.9 0-1.6-.8-1.6-1.8s.7-1.9 1.6-1.9 1.7.9 1.6 1.9c0 1-.7 1.8-1.6 1.8Z"/></svg>
+      Join our Discord
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo-icon">
+          <img src="/static/assets/logo/logo-mini.png" alt="EXE" class="nav-logo-mini-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;">
+            <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/>
+            <line x1="12" y1="2" x2="12" y2="22"/>
+            <line x1="2" y1="8.5" x2="22" y2="8.5"/>
+          </svg>
+        </div>
+        <span class="footer-brand-text">EXE Development</span>
+      </div>
+      <div class="footer-links">
+        <a href="#what-we-do">What we do</a>
+        <a href="#values">How we work</a>
+        <a href="/projects">Projects</a>
+        <a href="/legal/contact">Discord</a>
+        <a href="/legal/support">Support</a>
+        <a href="/legal/terms">Terms</a>
+        <a href="/legal/privacy">Privacy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 EXE Development. All rights reserved.</div>
+      <div class="footer-social">
+        <a href="/legal/contact" title="Discord">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/><path d="M16 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/><path d="M6 8s2-2 6-2 6 2 6 2l1 9s-3 3-7 3-7-3-7-3l1-9Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="page-transition" aria-hidden="true"></div>
+<script>
+  document.body.classList.add('page-enter');
+
+  const transitionOverlay = document.querySelector('.page-transition');
+  const revealTargets = document.querySelectorAll('section, .hero, .hero-actions, .wood-card, .value-card, .footer, .community-card, .explore-banner');
+
+  revealTargets.forEach((el, index) => {
+    el.classList.add('reveal');
+    el.style.transitionDelay = `${index * 60}ms`;
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealTargets.forEach((el) => revealObserver.observe(el));
+
+  document.querySelectorAll('a[href]').forEach((link) => {
+    const href = link.getAttribute('href') || '';
+    const isLocal = href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('#') && !href.startsWith('javascript:') && !link.hasAttribute('target');
+    if (!isLocal) return;
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      document.body.classList.add('page-exit');
+      transitionOverlay.classList.add('is-visible');
+      setTimeout(() => { window.location.href = href; }, 260);
+    });
+  });
+</script>
+<script src="/static/js/auth-nav.js" defer></script>
+</body>
+</html>

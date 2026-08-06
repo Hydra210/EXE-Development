@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — EXE Development</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #251B12; color: #F0E4D2; font-family: 'Inter', sans-serif;
+    min-height: 100vh; padding: 24px;
+  }
+  .page-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+  .page-header { display: grid; gap: 10px; margin-bottom: 32px; }
+  h1 { font-size: clamp(30px, 4vw, 46px); line-height: 1.05; }
+  .page-meta { color: rgba(240,228,210,0.68); font-size: 15px; }
+  .section { margin-bottom: 32px; }
+  .section h2 {
+    font-size: clamp(22px, 3vw, 30px);
+    margin-bottom: 14px;
+    color: #F8F3E7;
+  }
+  .section p,
+  .section ul {
+    color: rgba(240,228,210,0.78);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+  .section ul { list-style-position: inside; margin-left: 0; padding-left: 20px; }
+  .section ul li { margin-bottom: 10px; }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 24px;
+    color: rgba(240,228,210,0.72);
+  }
+  .footer-links a { color: #B794F6; text-decoration: none; }
+  .footer-links a:hover { text-decoration: underline; }
+  @media (max-width: 680px) {
+    .page-shell { padding: 30px 16px; }
+  }
+</style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="page-header">
+      <h1>Terms of Service</h1>
+      <p class="page-meta">Last updated: August 2026 | EXE Development</p>
+      <p>These Terms of Service govern your use of EXE Development’s website and services. Please read them carefully before accessing or using our offerings.</p>
+    </header>
+
+    <section class="section">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By using our website, you agree to these Terms of Service and any policies referenced here. If you do not agree, please do not use our services.</p>
+    </section>
+
+    <section class="section">
+      <h2>2. Account Registration</h2>
+      <p>When creating an account, you must provide accurate information and keep it up to date. You are responsible for maintaining the security of your login credentials.</p>
+    </section>
+
+    <section class="section">
+      <h2>3. User Conduct</h2>
+      <p>Users must not misuse the website or services. Prohibited behavior includes infringement, harassment, unauthorized access, and content or activity that violates laws or third-party rights.</p>
+    </section>
+
+    <section class="section">
+      <h2>4. Intellectual Property</h2>
+      <p>All content, trademarks, and designs on this site are owned by EXE Development or licensed to us. You may not reproduce, distribute, or create derivative works without permission.</p>
+    </section>
+
+    <section class="section">
+      <h2>5. Service Availability</h2>
+      <p>We strive to keep the site available, but we do not guarantee uninterrupted access. We may modify or discontinue features without notice.</p>
+    </section>
+
+    <section class="section">
+      <h2>6. Privacy</h2>
+      <p>Our Privacy Policy explains how we collect and use personal information. By using the site, you also agree to our privacy practices.</p>
+    </section>
+
+    <section class="section">
+      <h2>7. Payment and Fees</h2>
+      <p>If any paid features are offered, the applicable pricing, billing, and refund terms will be communicated separately. You agree to pay all fees associated with the services you select.</p>
+    </section>
+
+    <section class="section">
+      <h2>8. Disclaimers</h2>
+      <p>The services are provided “as is” and “as available.” We disclaim all warranties, express or implied, including merchantability and fitness for a particular purpose.</p>
+    </section>
+
+    <section class="section">
+      <h2>9. Limitation of Liability</h2>
+      <p>To the fullest extent permitted by law, EXE Development is not liable for indirect, incidental, or consequential damages arising from your use of the site or services.</p>
+    </section>
+
+    <section class="section">
+      <h2>10. Termination</h2>
+      <p>We may suspend or terminate your access if you violate these Terms or for any other reason. You may also close your account at any time.</p>
+    </section>
+
+    <section class="section">
+      <h2>11. Governing Law</h2>
+      <p>These Terms are governed by the laws applicable to EXE Development. Disputes will be resolved under those laws, subject to local requirements.</p>
+    </section>
+
+    <section class="section">
+      <h2>12. Changes to Terms</h2>
+      <p>We may update these Terms periodically. We will post the revised version on this page and update the effective date. Continued use of the site after changes constitutes acceptance.</p>
+    </section>
+
+    <footer class="footer-links">
+      <a href="/">Home</a>
+      <a href="/legal/privacy">Privacy Policy</a>
+      <a href="/legal/contact">Contact</a>
+    </footer>
+  </main>
+  <div class="page-transition" aria-hidden="true"></div>
+  <script>
+    document.body.classList.add('page-enter');
+    const transitionOverlay = document.querySelector('.page-transition');
+    const revealTargets = document.querySelectorAll('.legal-shell, .legal-card, .legal-section, .footer-links');
+
+    revealTargets.forEach((el, index) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = `${index * 70}ms`;
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealTargets.forEach((el) => revealObserver.observe(el));
+
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const href = link.getAttribute('href') || '';
+      const isLocal = href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('#') && !href.startsWith('javascript:') && !link.hasAttribute('target');
+      if (!isLocal) return;
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.body.classList.add('page-exit');
+        transitionOverlay.classList.add('is-visible');
+        setTimeout(() => { window.location.href = href; }, 260);
+      });
+    });
+  </script>
+</body>
+</html>
