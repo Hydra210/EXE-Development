@@ -83,6 +83,17 @@ class Verify2FABody(BaseModel):
 class ForgotPasswordBody(BaseModel):
     email: EmailStr
 
+class UpdateProfileBody(BaseModel):
+    display_name: Optional[str] = None
+    avatar_url: Optional[str] = None
+
+class ChangePasswordBody(BaseModel):
+    current_password: str
+    new_password: str
+
+class Toggle2FABody(BaseModel):
+    enabled: bool
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # ACCOUNTS API HELPER
@@ -112,6 +123,33 @@ def set_session_cookies(response: Response, access_token: str, refresh_token: st
 def clear_session_cookies(response: Response) -> None:
     response.delete_cookie(ACCESS_COOKIE, path="/")
     response.delete_cookie(REFRESH_COOKIE, path="/")
+
+async def call_accounts_api_authed(
+    request: Request, response: Response, method: str, path: str,
+    json_body: dict | None = None,
+) -> httpx.Response:
+    """Same idea as /api/auth/session's refresh logic, generalized for any
+    authenticated account route: try the cached access-token cookie first,
+    and only pay for a refresh round-trip if that one comes back expired."""
+    access_token = request.cookies.get(ACCESS_COOKIE)
+    if access_token:
+        resp = await call_accounts_api(method, path, json_body, token=access_token)
+        if resp.status_code != 401:
+            return resp
+
+    refresh_token = request.cookies.get(REFRESH_COOKIE)
+    if not refresh_token:
+        clear_session_cookies(response)
+        raise HTTPException(401, "Not logged in")
+
+    refresh_resp = await call_accounts_api("POST", "/auth/refresh", {"refresh_token": refresh_token})
+    if refresh_resp.status_code != 200:
+        clear_session_cookies(response)
+        raise HTTPException(401, "Session expired, please log in again")
+
+    refreshed = refresh_resp.json()
+    set_session_cookies(response, refreshed["access_token"], refreshed["refresh_token"])
+    return await call_accounts_api(method, path, json_body, token=refreshed["access_token"])
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -219,6 +257,65 @@ async def session(request: Request, response: Response):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# ROUTES — ACCOUNT (cookie-authenticated proxy to Accounts API)
+# ─────────────────────────────────────────────────────────────────────────────
+@app.get("/api/account/me")
+async def account_me(request: Request, response: Response):
+    resp = await call_accounts_api_authed(request, response, "GET", "/auth/me")
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not load account"))
+    return resp.json()
+
+@app.patch("/api/account/me")
+async def account_update_profile(body: UpdateProfileBody, request: Request, response: Response):
+    resp = await call_accounts_api_authed(
+        request, response, "PATCH", "/auth/me", body.model_dump(exclude_none=True)
+    )
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not update profile"))
+    return resp.json()
+
+@app.post("/api/account/change-password")
+async def account_change_password(body: ChangePasswordBody, request: Request, response: Response):
+    resp = await call_accounts_api_authed(
+        request, response, "POST", "/auth/change-password", body.model_dump()
+    )
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not change password"))
+    return resp.json()
+
+@app.post("/api/account/2fa")
+async def account_toggle_2fa(body: Toggle2FABody, request: Request, response: Response):
+    resp = await call_accounts_api_authed(
+        request, response, "POST", "/auth/2fa/toggle", {"enabled": body.enabled}
+    )
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not update 2FA"))
+    return resp.json()
+
+@app.get("/api/account/sessions")
+async def account_sessions(request: Request, response: Response):
+    resp = await call_accounts_api_authed(request, response, "GET", "/auth/sessions")
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not load sessions"))
+    return resp.json()
+
+@app.delete("/api/account/sessions/{session_id}")
+async def account_revoke_session(session_id: str, request: Request, response: Response):
+    resp = await call_accounts_api_authed(request, response, "DELETE", f"/auth/sessions/{session_id}")
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not revoke session"))
+    return resp.json()
+
+@app.post("/api/account/sessions/revoke-others")
+async def account_revoke_others(request: Request, response: Response):
+    resp = await call_accounts_api_authed(request, response, "POST", "/auth/sessions/revoke-others")
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not revoke other sessions"))
+    return resp.json()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # ROUTES — PAGES (clean URLs, no .html)
 # ─────────────────────────────────────────────────────────────────────────────
 def page(*parts: str) -> FileResponse:
@@ -248,6 +345,10 @@ def auth_signup():
 @app.get("/auth/forgot-password")
 def auth_forgot_password():
     return page("auth", "forgot-password.html")
+
+@app.get("/account/settings")
+def account_settings():
+    return page("account", "settings.html")
 
 @app.get("/legal/contact")
 def legal_contact():
