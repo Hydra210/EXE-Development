@@ -49,7 +49,7 @@
         opacity: 1; visibility: visible; transform: translateY(0);
       }
       .exe-account-dropdown-item {
-        display: block; width: 100%; text-align: left;
+        display: block; width: 100%; text-align: left; text-decoration: none;
         background: none; border: none; color: #f0e4d2; font: inherit; font-size: 13.5px;
         padding: 10px 12px; border-radius: 9px; cursor: pointer;
       }
@@ -82,11 +82,10 @@
     const dropdown = document.createElement('div');
     dropdown.className = 'exe-account-dropdown';
 
-    const settingsBtn = document.createElement('button');
-    settingsBtn.type = 'button';
-    settingsBtn.className = 'exe-account-dropdown-item is-muted';
-    settingsBtn.textContent = 'Account settings (coming soon)';
-    settingsBtn.disabled = true;
+    const settingsBtn = document.createElement('a');
+    settingsBtn.href = '/account/settings';
+    settingsBtn.className = 'exe-account-dropdown-item';
+    settingsBtn.textContent = 'Account settings';
 
     const divider = document.createElement('div');
     divider.className = 'exe-account-dropdown-divider';
