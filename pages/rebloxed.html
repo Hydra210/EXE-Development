@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rebloxed — by EXE Development</title>
+<title>Rebloxed, by EXE Development</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -45,10 +45,10 @@
       linear-gradient(180deg, rgba(255,255,255,0.025), transparent 38%);
   }
   /* background-color is now set continuously by JS on scroll (a weighted
-     blend of neighboring sections), not switched by CSS class — that's
+     blend of neighboring sections), not switched by CSS class, that's
      what makes it flow instead of stepping */
 
-  /* one glow layer per section, stacked — JS fades each one's opacity
+  /* one glow layer per section, stacked, JS fades each one's opacity
      continuously based on scroll position, so they cross-fade smoothly
      instead of popping between states */
   #mood{position:fixed; inset:0; z-index:0; pointer-events:none;}
@@ -103,7 +103,7 @@
   .nav-cta:hover, .nav-auth:hover{color:var(--text); border-color:var(--purple); box-shadow:0 0 16px -4px var(--glow);}
   .nav-cta:hover{color:var(--text); border-color:var(--purple); box-shadow:0 0 16px -4px var(--glow);}
 
-  /* HERO — now uses the same full-bleed EXE hero language as the main homepage */
+  /* HERO, now uses the same full-bleed EXE hero language as the main homepage */
   .hero{
     width:100vw !important; max-width:none !important; margin:0 0 0 calc(50% - 50vw) !important;
     display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
@@ -232,7 +232,7 @@
   .section-head h2{font-size:clamp(28px,4vw,42px); font-weight:600;}
   .section-head p{color:var(--text-dim); margin-top:14px; font-size:15.5px; line-height:1.6;}
 
-  /* ===== STATS — thin vertical scan-beams, contained to this band only ===== */
+  /* ===== STATS, thin vertical scan-beams, contained to this band only ===== */
   .stats{padding:0 24px 6px; max-width:1180px; margin:0 auto; overflow:hidden;}
   .stats-fx{position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;}
   .stats-fx .beam{
@@ -250,7 +250,7 @@
   .stat-card .num{font-family:'Space Grotesk', sans-serif; font-size:26px; font-weight:700; color:var(--purple-bright);}
   .stat-card .label{font-size:12.5px; color:var(--text-dim); margin-top:6px;}
 
-  /* ===== FEATURES — soft parallax orbs behind the grid ===== */
+  /* ===== FEATURES, soft parallax orbs behind the grid ===== */
   .features{padding:20px 24px 20px; max-width:1180px; margin:0 auto; position:relative; overflow:hidden;}
   .features-fx{position:absolute; inset:0; z-index:0; pointer-events:none;}
   .orb{
@@ -292,7 +292,7 @@
   .feature-card h4{font-size:16.5px; font-weight:600; margin-bottom:9px;}
   .feature-card p{font-size:13.8px; color:var(--text-dim); line-height:1.55;}
 
-  /* ===== STEPS — pulsing concentric rings behind the numbers ===== */
+  /* ===== STEPS, pulsing concentric rings behind the numbers ===== */
   .steps{padding:20px 24px 36px; max-width:1000px; margin:0 auto; position:relative; overflow:hidden;}
   .steps-fx{position:absolute; inset:0; z-index:0; pointer-events:none; display:flex; align-items:center; justify-content:center;}
   .ring{position:absolute; border:1px solid var(--stroke-soft); border-radius:50%; animation: ring-pulse 4.5s ease-out infinite;}
@@ -316,7 +316,7 @@
   .step h4{font-size:16px; font-weight:600; margin-bottom:8px;}
   .step p{font-size:13.8px; color:var(--text-dim); line-height:1.6;}
 
-  /* ===== SHOWCASE — slow diagonal light sweep, contained ===== */
+  /* ===== SHOWCASE, slow diagonal light sweep, contained ===== */
   .showcase{padding:20px 24px 40px; max-width:1180px; margin:0 auto; position:relative; overflow:hidden;}
   .sweep{
     position:absolute; top:-20%; left:-30%; width:60%; height:140%;
@@ -348,7 +348,7 @@
   .mini-list li{list-style:none; display:flex; gap:12px; align-items:flex-start; font-size:14.5px; color:var(--text-dim);}
   .mini-list li::before{content:"—"; color:var(--purple-bright); flex-shrink:0;}
 
-  /* ===== CTA — the tile pattern lives here only, this is its one home ===== */
+  /* ===== CTA, the tile pattern lives here only, this is its one home ===== */
   .cta-final{padding:40px 24px 40px; text-align:center; position:relative; overflow:hidden;}
   .cta-tiles{
     position:absolute; inset:0; z-index:0; pointer-events:none;
@@ -457,11 +457,12 @@
   <div class="feature-grid reveal">
     <div class="feature-card featured">
       <div class="ftxt">
-        <span class="ftag">Flagship feature</span>
+        <span class="ftag">#1 feature</span>
         <h3>Custom profile pages</h3>
-        <p>Visit any Roblox profile with Rebloxed installed and get redirected to that person's own page instead — their layout, their links, their vibe, still pulling live avatar and stats straight from Roblox.</p>
+        <p>Make your Roblox profile truly yours with a personalized profile page built around your own layout, links, and style, all while keeping your avatar and account stats synced live from Roblox.
+Got your own domain? Rebloxed lets you connect it to your profile, so anyone who visits can be redirected to your personal website in just a few clicks.</p>
       </div>
-      <div class="mock-url"><span>roblox.com/users/1234</span> → exedevelopment.com/users/1234</div>
+      <div class="mock-url"><span>roblox.com/users/1234</span> → YourCustomDomain.com</div>
     </div>
 
     <div class="feature-card">
@@ -477,7 +478,7 @@
     <div class="feature-card">
       <div class="ficon">◆</div>
       <h4>Server filters</h4>
-      <p>Sort servers by player count, ping, or region — find an empty one in one click.</p>
+      <p>Sort servers by player count, ping, or region, find an empty one in one click.</p>
     </div>
     <div class="feature-card">
       <div class="ficon">◆</div>
@@ -491,8 +492,8 @@
     </div>
     <div class="feature-card">
       <div class="ficon">◆</div>
-      <h4>EXE account sync</h4>
-      <p>Log in once with your EXE account and carry your profile, settings, and theme across every EXE product.</p>
+      <h4>Custom profile domain</h4>
+      <p>Got your own domain? With Rebloxed, you can connect a custom domain to your profile and automatically redirect anyone who visits it to your personal website.</p>
     </div>
   </div>
 </section>
@@ -511,7 +512,7 @@
     <div class="step">
       <div class="step-num">1</div>
       <h4>Add to Chrome</h4>
-      <p>Install Rebloxed from the Chrome Web Store — no account needed to get started.</p>
+      <p>Install Rebloxed from the Chrome Web Store and login to get started.</p>
     </div>
     <div class="step">
       <div class="step-num">2</div>
@@ -531,7 +532,7 @@
   <div class="showcase-grid">
     <div class="reveal">
       <h3>Make it yours</h3>
-      <h2>Themes, layouts, and links — set up once, seen by everyone.</h2>
+      <h2>Themes, layouts, and links, set up once, seen by everyone.</h2>
       <p>Pick a background, accent color, and layout for your page. Add your Discord, YouTube, socials, and whatever else belongs on a profile that's actually yours.</p>
       <ul class="mini-list">
         <li>Custom backgrounds, accent colors, and fonts</li>
@@ -696,7 +697,7 @@ window.addEventListener('resize', () => {
   const html = tickerItems.map(t => `<span>${t}</span>`).join('');
   track.innerHTML = html + html;
 
-  // stats section — a handful of thin vertical beams, contained to that band only
+  // stats section, a handful of thin vertical beams, contained to that band only
   const statsFx = document.getElementById('statsFx');
   const BEAM_COUNT = 7;
   for (let i = 0; i < BEAM_COUNT; i++) {
@@ -707,7 +708,7 @@ window.addEventListener('resize', () => {
     statsFx.appendChild(b);
   }
 
-  // continuous scroll-driven mood blend — no discrete on/off switch, so
+  // continuous scroll-driven mood blend, no discrete on/off switch, so
   // colors and glow layers flow smoothly instead of stepping between states
   const moodStops = [
     { theme: 'hero',     el: document.querySelector('[data-theme="hero"]'),     rgb: [2, 2, 3] },
@@ -732,7 +733,7 @@ window.addEventListener('resize', () => {
       const rect = s.el.getBoundingClientRect();
       const mid = rect.top + rect.height / 2;
       const dist = Math.abs(mid - center);
-      // triangular falloff — full weight at center, zero past one viewport away
+      // triangular falloff, full weight at center, zero past one viewport away
       return Math.max(0, 1 - dist / vh);
     });
     const total = weights.reduce((a, b) => a + b, 0) || 1;
@@ -777,7 +778,7 @@ window.addEventListener('resize', () => {
     });
   });
 
-  // parallax — elements tagged data-parallax move at a different rate than
+  // parallax, elements tagged data-parallax move at a different rate than
   // scroll as they pass through the viewport, only while actually visible
   const parallaxEls = Array.from(document.querySelectorAll('[data-parallax]'));
   function updateParallax(){
