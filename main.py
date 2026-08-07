@@ -85,7 +85,6 @@ class ForgotPasswordBody(BaseModel):
 
 class UpdateProfileBody(BaseModel):
     display_name: Optional[str] = None
-    avatar_url: Optional[str] = None
 
 class ChangePasswordBody(BaseModel):
     current_password: str
@@ -150,6 +149,40 @@ async def call_accounts_api_authed(
     refreshed = refresh_resp.json()
     set_session_cookies(response, refreshed["access_token"], refreshed["refresh_token"])
     return await call_accounts_api(method, path, json_body, token=refreshed["access_token"])
+
+async def call_accounts_api_authed_file(
+    request: Request, response: Response, method: str, path: str, files: dict,
+) -> httpx.Response:
+    """Same refresh-once-if-expired logic as call_accounts_api_authed, but for
+    multipart file uploads (avatar), which need files= instead of json=."""
+    async def _send(token: str) -> httpx.Response:
+        try:
+            return await http_client.request(
+                method, f"{ACCOUNTS_API_URL}{path}", files=files,
+                headers={"Authorization": f"Bearer {token}"},
+            )
+        except httpx.RequestError:
+            raise HTTPException(502, "Accounts service is unreachable right now. Try again in a moment")
+
+    access_token = request.cookies.get(ACCESS_COOKIE)
+    if access_token:
+        resp = await _send(access_token)
+        if resp.status_code != 401:
+            return resp
+
+    refresh_token = request.cookies.get(REFRESH_COOKIE)
+    if not refresh_token:
+        clear_session_cookies(response)
+        raise HTTPException(401, "Not logged in")
+
+    refresh_resp = await call_accounts_api("POST", "/auth/refresh", {"refresh_token": refresh_token})
+    if refresh_resp.status_code != 200:
+        clear_session_cookies(response)
+        raise HTTPException(401, "Session expired, please log in again")
+
+    refreshed = refresh_resp.json()
+    set_session_cookies(response, refreshed["access_token"], refreshed["refresh_token"])
+    return await _send(refreshed["access_token"])
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -282,6 +315,27 @@ async def account_change_password(body: ChangePasswordBody, request: Request, re
     )
     if resp.status_code != 200:
         raise HTTPException(resp.status_code, error_detail(resp, "Could not change password"))
+    return resp.json()
+
+@app.post("/api/account/avatar")
+async def account_upload_avatar(request: Request, response: Response):
+    form = await request.form()
+    upload = form.get("file")
+    if upload is None:
+        raise HTTPException(400, "No file provided")
+    file_bytes = await upload.read()
+    files = {"file": (upload.filename, file_bytes, upload.content_type)}
+
+    resp = await call_accounts_api_authed_file(request, response, "POST", "/auth/avatar", files)
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not upload avatar"))
+    return resp.json()
+
+@app.delete("/api/account/avatar")
+async def account_delete_avatar(request: Request, response: Response):
+    resp = await call_accounts_api_authed(request, response, "DELETE", "/auth/avatar")
+    if resp.status_code != 200:
+        raise HTTPException(resp.status_code, error_detail(resp, "Could not remove avatar"))
     return resp.json()
 
 @app.post("/api/account/2fa")
