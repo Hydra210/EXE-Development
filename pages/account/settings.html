@@ -14,12 +14,9 @@
     --wood-light: #9C7146;
     --wood: #7A5531;
     --wood-dark: #543A20;
-    --wood-deepest: #1F1409;
     --purple: #9B6FF5;
     --purple-deep: #B794F6;
     --purple-soft: rgba(155, 111, 245, 0.16);
-    --amber: #E8A855;
-    --amber-glow: rgba(232, 168, 85, 0.22);
     --red: #E86A55;
     --red-glow: rgba(232, 106, 85, 0.16);
     --text: #F0E4D2;
@@ -27,7 +24,6 @@
     --text-dimmer: rgba(240, 228, 210, 0.34);
     --cream: #F5EBDA;
     --border: rgba(240, 228, 210, 0.11);
-    --card: rgba(0, 0, 0, 0.22);
     --font-display: 'Fraunces', serif;
     --font-ui: 'Inter', sans-serif;
     --font-mono: 'DM Mono', monospace;
@@ -35,129 +31,204 @@
 
   html { scroll-behavior: smooth; }
   body {
-    background: var(--bg);
+    background:
+      radial-gradient(circle at 15% 0%, rgba(155,111,245,0.08), transparent 45%),
+      var(--bg);
     color: var(--text);
     font-family: var(--font-ui);
     min-height: 100vh;
-    padding: 48px 24px 100px;
+    padding: 56px 24px 120px;
   }
 
-  .wrap { max-width: 640px; margin: 0 auto; }
+  .wrap { max-width: 660px; margin: 0 auto; }
 
-  .eyebrow {
+  .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+  .back-link {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.5px; color: var(--text-dim);
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--purple-deep); }
+
+  .section-label {
     font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--wood-light); display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    color: var(--wood-light); display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
   }
-  .eyebrow::before { content: ''; width: 18px; height: 1px; background: var(--wood-light); }
+  .section-label::before { content: ''; width: 18px; height: 1px; background: var(--wood-light); }
 
   h1 {
-    font-family: var(--font-display); font-size: clamp(28px, 4vw, 38px);
-    font-weight: 600; letter-spacing: -0.5px; margin-bottom: 40px;
+    font-family: var(--font-display); font-size: clamp(30px, 4.4vw, 42px);
+    font-weight: 600; letter-spacing: -0.5px; margin-bottom: 48px; line-height: 1.15;
   }
 
   .card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-    padding: 28px; margin-bottom: 22px;
+    background: rgba(0,0,0,0.22); border: 1px solid var(--border); border-radius: 24px;
+    padding: 32px; margin-bottom: 20px;
   }
   .card h2 {
-    font-family: var(--font-display); font-size: 19px; font-weight: 600; margin-bottom: 4px;
+    font-family: var(--font-display); font-size: 20px; font-weight: 600; margin-bottom: 5px;
   }
-  .card .desc { font-size: 13px; color: var(--text-dim); margin-bottom: 22px; }
+  .card .desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.55; margin-bottom: 24px; }
 
-  .row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 14px; }
+  .row { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 16px; }
   .row:last-child { margin-bottom: 0; }
-  .field { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 6px; }
+  .field { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 7px; }
   label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dimmer); }
 
   input {
-    background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text);
-    padding: 11px 14px; font-family: var(--font-ui); font-size: 14px; border-radius: 10px; outline: none;
-    transition: border-color 0.2s;
+    background: rgba(0,0,0,0.28); border: 1px solid var(--border); color: var(--text);
+    padding: 12px 15px; font-family: var(--font-ui); font-size: 14px; border-radius: 12px; outline: none;
+    transition: border-color 0.2s, background 0.2s; width: 100%;
   }
-  input:focus { border-color: var(--wood-light); }
+  input:focus { border-color: var(--wood-light); background: rgba(0,0,0,0.36); }
   input:disabled { opacity: 0.5; }
 
-  .btn {
-    padding: 11px 22px; font-family: var(--font-ui); font-size: 13.5px; font-weight: 600;
+  /* ── buttons — mirrors the homepage's actual .btn-primary / .btn-secondary ── */
+  .btn-primary {
+    padding: 12px 26px; font-family: var(--font-ui); font-size: 13.5px; font-weight: 600;
     color: var(--cream); border: none; border-radius: 100px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s;
     background: linear-gradient(155deg, var(--wood-light), var(--wood-dark));
-    white-space: nowrap; transition: filter 0.15s;
+    box-shadow: 0 8px 20px rgba(70, 49, 31, 0.3);
   }
-  .btn:hover { filter: brightness(1.1); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(139,92,246,0.28); }
+  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
 
-  .btn-ghost {
-    background: transparent; border: 1px solid var(--border); color: var(--text);
+  .btn-secondary {
+    padding: 12px 24px; font-family: var(--font-ui); font-size: 13.5px; font-weight: 600;
+    background: rgba(0,0,0,0.22); color: var(--text-dim);
+    border: 1px solid var(--border); border-radius: 100px; cursor: pointer;
+    transition: all 0.2s;
   }
-  .btn-ghost:hover { border-color: var(--wood-light); filter: none; }
+  .btn-secondary:hover { color: var(--purple-deep); border-color: var(--purple); background: rgba(0,0,0,0.35); }
 
-  .btn-danger {
-    background: transparent; border: 1px solid rgba(232, 106, 85, 0.4); color: var(--red);
+  .btn-small { padding: 7px 16px; font-size: 12px; }
+  .btn-text {
+    background: none; border: none; color: var(--text-dim); font-family: var(--font-ui);
+    font-size: 12.5px; cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+    transition: color 0.2s; padding: 0;
   }
-  .btn-danger:hover { background: var(--red-glow); filter: none; }
+  .btn-text:hover { color: var(--red); }
 
-  .btn-small { padding: 7px 14px; font-size: 12px; }
-
-  .avatar-row { display: flex; align-items: center; gap: 18px; }
-  .avatar-preview {
-    width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
-    border: 1px solid var(--border); background: var(--bg-deep);
+  /* ── avatar upload ── */
+  .avatar-row { display: flex; align-items: center; gap: 22px; margin-bottom: 24px; }
+  .avatar-drop {
+    position: relative; width: 84px; height: 84px; border-radius: 50%; flex-shrink: 0;
+    cursor: pointer; background: linear-gradient(155deg, var(--wood-light), var(--wood-dark));
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    border: 2px solid var(--border); transition: border-color 0.2s;
   }
+  .avatar-drop:hover { border-color: var(--purple); }
+  .avatar-drop.is-dragover { border-color: var(--purple); box-shadow: 0 0 0 4px var(--purple-soft); }
+  .avatar-drop img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .avatar-drop .avatar-placeholder {
+    font-family: var(--font-display); font-size: 30px; font-weight: 600; color: var(--cream);
+  }
+  .avatar-drop .avatar-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: flex;
+    align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.5px; text-transform: uppercase;
+    color: var(--cream); text-align: center; padding: 6px;
+  }
+  .avatar-drop:hover .avatar-overlay { opacity: 1; }
+  .avatar-meta { display: flex; flex-direction: column; gap: 6px; }
+  .avatar-meta .hint { font-size: 12px; color: var(--text-dimmer); }
+  .avatar-actions { display: flex; gap: 14px; align-items: center; }
 
+  /* ── 2FA toggle ── */
   .toggle-row { display: flex; align-items: center; justify-content: space-between; }
-  .toggle-label { font-size: 14px; }
+  .toggle-label { font-size: 14.5px; font-weight: 500; }
   .toggle-sub { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
 
-  .switch { position: relative; width: 44px; height: 25px; flex-shrink: 0; }
+  .switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider {
     position: absolute; cursor: pointer; inset: 0; background: rgba(240,228,210,0.15);
     border-radius: 100px; transition: 0.2s;
   }
   .slider::before {
-    content: ''; position: absolute; height: 19px; width: 19px; left: 3px; top: 3px;
+    content: ''; position: absolute; height: 20px; width: 20px; left: 3px; top: 3px;
     background: var(--cream); border-radius: 50%; transition: 0.2s;
   }
-  .switch input:checked + .slider { background: var(--wood-light); }
-  .switch input:checked + .slider::before { transform: translateX(19px); }
+  .switch input:checked + .slider { background: linear-gradient(155deg, var(--wood-light), var(--wood-dark)); }
+  .switch input:checked + .slider::before { transform: translateX(20px); }
 
-  .session { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  /* ── sessions ── */
+  .session {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 16px 0; border-bottom: 1px solid var(--border);
+  }
   .session:last-child { border-bottom: none; padding-bottom: 0; }
-  .session-info { font-size: 13.5px; }
-  .session-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dimmer); margin-top: 3px; }
-  .session-current { display: inline-block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); background: var(--amber-glow); padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+  .session:first-child { padding-top: 0; }
+  .session-icon {
+    width: 38px; height: 38px; border-radius: 11px; background: var(--purple-soft);
+    border: 1px solid rgba(155,111,245,0.25); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 16px;
+  }
+  .session-main { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .session-info { min-width: 0; }
+  .session-title { font-size: 13.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .session-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dimmer); margin-top: 3px; }
+  .session-current {
+    display: inline-block; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--purple-deep); background: var(--purple-soft);
+    padding: 2px 7px; border-radius: 4px;
+  }
 
-  .msg { font-size: 12.5px; margin-top: 10px; display: none; }
-  .msg.error { color: var(--red); }
-  .msg.success { color: #8fd99a; }
+  .msg {
+    font-size: 12.5px; margin-top: 12px; padding: 9px 13px; border-radius: 10px; display: none;
+  }
+  .msg.error { color: var(--red); background: var(--red-glow); display: block; }
+  .msg.success { color: #9ee6ab; background: rgba(120,220,140,0.1); display: block; }
 
-  #loading, #login-gate { text-align: center; padding: 80px 20px; color: var(--text-dim); font-family: var(--font-mono); font-size: 13px; }
+  #loading, #login-gate {
+    text-align: center; padding: 100px 20px; color: var(--text-dim);
+    font-family: var(--font-mono); font-size: 13px;
+  }
+  #login-gate a { color: var(--purple-deep); }
   #settings-content { display: none; }
+
+  @media (max-width: 480px) {
+    .card { padding: 24px 20px; }
+    .avatar-row { gap: 16px; }
+  }
 </style>
 </head>
 <body>
 
 <div class="wrap">
-  <div class="eyebrow">Account</div>
+  <div class="top-row">
+    <a href="/" class="back-link">← Back to EXE Development</a>
+  </div>
+
+  <div class="section-label">Account</div>
   <h1>Settings</h1>
 
-  <div id="loading">Loading account…</div>
-  <div id="login-gate" style="display:none;">You're not logged in. <a href="/login" style="color: var(--purple-deep);">Log in</a> to manage your account.</div>
+  <div id="loading">Loading your account…</div>
+  <div id="login-gate" style="display:none;">You're not logged in. <a href="/auth/login">Log in</a> to manage your account.</div>
 
   <div id="settings-content">
 
     <!-- Profile -->
     <div class="card">
       <h2>Profile</h2>
-      <div class="desc">Your display name and avatar, shown across EXE Development products.</div>
+      <div class="desc">Your display name and avatar, shown across every EXE Development product.</div>
 
-      <div class="row avatar-row" style="margin-bottom: 22px;">
-        <img id="avatar-preview" class="avatar-preview" src="" alt="Avatar">
-        <div class="field" style="min-width: 220px;">
-          <label>Avatar URL</label>
-          <input id="avatar-url" placeholder="https://…">
+      <div class="avatar-row">
+        <div class="avatar-drop" id="avatar-drop">
+          <img id="avatar-preview" alt="Avatar">
+          <span class="avatar-placeholder" id="avatar-placeholder">?</span>
+          <div class="avatar-overlay">Change</div>
         </div>
+        <div class="avatar-meta">
+          <div class="avatar-actions">
+            <button class="btn-secondary btn-small" onclick="document.getElementById('avatar-file').click()">Upload photo</button>
+            <button class="btn-text" id="remove-avatar-btn" onclick="removeAvatar()" style="display:none;">Remove</button>
+          </div>
+          <div class="hint">PNG, JPEG, WEBP, or GIF · up to 3MB</div>
+        </div>
+        <input type="file" id="avatar-file" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;">
       </div>
+      <div id="avatar-msg" class="msg"></div>
 
       <div class="row">
         <div class="field">
@@ -165,12 +236,12 @@
           <input id="display-name" placeholder="Your name">
         </div>
         <div class="field">
-          <label>Email (contact support to change)</label>
-          <input id="email-display" disabled>
+          <label>Email</label>
+          <input id="email-display" disabled title="Contact support to change your email">
         </div>
       </div>
       <div class="row">
-        <button class="btn" onclick="saveProfile()">Save Profile</button>
+        <button class="btn-primary" onclick="saveProfile()">Save Profile</button>
       </div>
       <div id="profile-msg" class="msg"></div>
     </div>
@@ -196,7 +267,7 @@
         </div>
       </div>
       <div class="row">
-        <button class="btn" onclick="changePassword()">Update Password</button>
+        <button class="btn-primary" onclick="changePassword()">Update Password</button>
       </div>
       <div id="password-msg" class="msg"></div>
     </div>
@@ -223,8 +294,8 @@
       <h2>Active Sessions</h2>
       <div class="desc">Devices currently logged into your account. Revoke any you don't recognize.</div>
       <div id="sessions-list"><div class="toggle-sub">Loading sessions…</div></div>
-      <div class="row" style="margin-top: 18px;">
-        <button class="btn-ghost btn" onclick="revokeOtherSessions()">Log Out All Other Devices</button>
+      <div class="row" style="margin-top: 20px;">
+        <button class="btn-secondary" onclick="revokeOtherSessions()">Log Out All Other Devices</button>
       </div>
       <div id="sessions-msg" class="msg"></div>
     </div>
@@ -252,11 +323,19 @@ async function api(method, path, body) {
   return data;
 }
 
+async function apiUpload(path, file) {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(path, { method: 'POST', credentials: 'same-origin', body: form });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || res.statusText);
+  return data;
+}
+
 function showMsg(id, text, isError) {
   const el = document.getElementById(id);
   el.textContent = text;
   el.className = 'msg ' + (isError ? 'error' : 'success');
-  el.style.display = 'block';
 }
 
 let currentUser = null;
@@ -265,11 +344,10 @@ async function init() {
   try {
     currentUser = await api('GET', '/api/account/me');
     document.getElementById('display-name').value = currentUser.display_name || '';
-    document.getElementById('avatar-url').value = currentUser.avatar_url || '';
-    document.getElementById('avatar-preview').src = currentUser.avatar_url || '';
     document.getElementById('email-display').value = currentUser.email || '';
     document.getElementById('tfa-toggle').checked = !!currentUser.two_factor_enabled;
     document.getElementById('tfa-status').textContent = currentUser.two_factor_enabled ? 'Currently on' : 'Currently off';
+    setAvatarPreview(currentUser.avatar_url);
 
     await loadSessions();
 
@@ -281,16 +359,72 @@ async function init() {
   }
 }
 
-document.getElementById('avatar-url').addEventListener('input', (e) => {
-  document.getElementById('avatar-preview').src = e.target.value;
+function setAvatarPreview(url) {
+  const img = document.getElementById('avatar-preview');
+  const placeholder = document.getElementById('avatar-placeholder');
+  const removeBtn = document.getElementById('remove-avatar-btn');
+  if (url) {
+    img.src = url + '?t=' + Date.now(); // cache-bust after upload/remove
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+    removeBtn.style.display = 'inline';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = 'block';
+    placeholder.textContent = (currentUser && currentUser.display_name || '?').trim().charAt(0).toUpperCase() || '?';
+    removeBtn.style.display = 'none';
+  }
+}
+
+// ── avatar upload wiring: click, drag-and-drop, or file picker ──
+const avatarDrop = document.getElementById('avatar-drop');
+const avatarFileInput = document.getElementById('avatar-file');
+
+avatarDrop.addEventListener('click', () => avatarFileInput.click());
+avatarFileInput.addEventListener('change', () => {
+  if (avatarFileInput.files[0]) uploadAvatar(avatarFileInput.files[0]);
 });
+['dragover', 'dragenter'].forEach(evt =>
+  avatarDrop.addEventListener(evt, (e) => { e.preventDefault(); avatarDrop.classList.add('is-dragover'); })
+);
+['dragleave', 'drop'].forEach(evt =>
+  avatarDrop.addEventListener(evt, (e) => { e.preventDefault(); avatarDrop.classList.remove('is-dragover'); })
+);
+avatarDrop.addEventListener('drop', (e) => {
+  const file = e.dataTransfer.files[0];
+  if (file) uploadAvatar(file);
+});
+
+async function uploadAvatar(file) {
+  if (file.size > 3 * 1024 * 1024) {
+    showMsg('avatar-msg', 'That file is over 3MB — try a smaller image.', true);
+    return;
+  }
+  try {
+    const data = await apiUpload('/api/account/avatar', file);
+    setAvatarPreview(data.avatar_url);
+    showMsg('avatar-msg', 'Avatar updated.', false);
+  } catch (e) {
+    showMsg('avatar-msg', e.message, true);
+  }
+}
+
+async function removeAvatar() {
+  try {
+    await api('DELETE', '/api/account/avatar');
+    setAvatarPreview(null);
+    showMsg('avatar-msg', 'Avatar removed.', false);
+  } catch (e) {
+    showMsg('avatar-msg', e.message, true);
+  }
+}
 
 async function saveProfile() {
   try {
-    await api('PATCH', '/api/account/me', {
+    const updated = await api('PATCH', '/api/account/me', {
       display_name: document.getElementById('display-name').value.trim(),
-      avatar_url: document.getElementById('avatar-url').value.trim(),
     });
+    currentUser = updated;
     showMsg('profile-msg', 'Profile updated.', false);
   } catch (e) {
     showMsg('profile-msg', e.message, true);
@@ -319,7 +453,7 @@ async function changePassword() {
     document.getElementById('current-password').value = '';
     document.getElementById('new-password').value = '';
     document.getElementById('confirm-password').value = '';
-    showMsg('password-msg', 'Password updated.', false);
+    showMsg('password-msg', 'Password updated. Other devices have been logged out.', false);
   } catch (e) {
     showMsg('password-msg', e.message, true);
   }
@@ -332,7 +466,7 @@ async function toggle2FA() {
     document.getElementById('tfa-status').textContent = enabling ? 'Currently on' : 'Currently off';
     showMsg('tfa-msg', enabling ? '2FA enabled.' : '2FA disabled.', false);
   } catch (e) {
-    document.getElementById('tfa-toggle').checked = !enabling; // revert on failure
+    document.getElementById('tfa-toggle').checked = !enabling;
     showMsg('tfa-msg', e.message, true);
   }
 }
@@ -346,14 +480,20 @@ async function loadSessions() {
       const div = document.createElement('div');
       div.className = 'session';
       div.innerHTML = `
-        <div class="session-info">
-          ${escapeHtml(s.app || 'Unknown app')}${s.is_current ? '<span class="session-current">This device</span>' : ''}
-          <div class="session-meta">${escapeHtml(s.ip || 'unknown IP')} · ${escapeHtml(shortenUA(s.user_agent))} · last active ${s.last_used_at ? new Date(s.last_used_at).toLocaleString() : '—'}</div>
+        <div class="session-main">
+          <div class="session-icon">${s.is_current ? '●' : '○'}</div>
+          <div class="session-info">
+            <div class="session-title">
+              ${escapeHtml(s.app || 'Unknown app')}
+              ${s.is_current ? '<span class="session-current">This device</span>' : ''}
+            </div>
+            <div class="session-meta">${escapeHtml(s.ip || 'unknown IP')} · ${escapeHtml(shortenUA(s.user_agent))} · ${s.last_used_at ? new Date(s.last_used_at).toLocaleString() : '—'}</div>
+          </div>
         </div>
       `;
       if (!s.is_current) {
         const btn = document.createElement('button');
-        btn.className = 'btn-ghost btn btn-small';
+        btn.className = 'btn-secondary btn-small';
         btn.textContent = 'Revoke';
         btn.onclick = () => revokeSession(s.id);
         div.appendChild(btn);
@@ -368,7 +508,6 @@ async function loadSessions() {
 
 function shortenUA(ua) {
   if (!ua) return 'unknown device';
-  // Just enough to be readable without pulling in a full UA-parsing library.
   const browser = ua.match(/(Chrome|Firefox|Safari|Edg|OPR)\/[\d.]+/)?.[1] || 'Browser';
   const os = ua.match(/(Windows|Mac OS X|Linux|Android|iPhone|iPad)/)?.[1] || '';
   return [browser, os].filter(Boolean).join(' on ');
@@ -384,7 +523,7 @@ async function revokeSession(id) {
 }
 
 async function revokeOtherSessions() {
-  if (!confirm('Log out every other device? You\'ll stay logged in here.')) return;
+  if (!confirm("Log out every other device? You'll stay logged in here.")) return;
   try {
     await api('POST', '/api/account/sessions/revoke-others');
     showMsg('sessions-msg', 'All other sessions logged out.', false);
