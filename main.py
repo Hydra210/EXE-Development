@@ -18,9 +18,11 @@ from typing import Optional
 import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
+
+from og_tags import inject_og
 
 load_dotenv()
 
@@ -224,7 +226,8 @@ def page(*parts: str) -> FileResponse:
 
 @app.get("/")
 def home():
-    return page("index.html")
+    html = PAGES_DIR.joinpath("index.html").read_text(encoding="utf-8")
+    return HTMLResponse(inject_og(html, "/"))
 
 @app.get("/rebloxed")
 def rebloxed():
