@@ -154,10 +154,15 @@
       <div class="row avatar-row" style="margin-bottom: 22px;">
         <img id="avatar-preview" class="avatar-preview" src="" alt="Avatar">
         <div class="field" style="min-width: 220px;">
-          <label>Avatar URL</label>
-          <input id="avatar-url" placeholder="https://…">
+          <label>Avatar</label>
+          <input type="file" id="js-avatar-file" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;">
+          <div class="row" style="gap: 8px;">
+            <button class="btn" type="button" onclick="document.getElementById('js-avatar-file').click()">Upload</button>
+            <button class="btn" type="button" id="js-avatar-remove" onclick="removeAvatar()">Remove</button>
+          </div>
         </div>
       </div>
+      <div id="avatar-msg" class="msg"></div>
 
       <div class="row">
         <div class="field">
@@ -296,7 +301,6 @@ async function init() {
   try {
     currentUser = await api('GET', '/account/me');
     document.getElementById('display-name').value = currentUser.display_name || '';
-    document.getElementById('avatar-url').value = currentUser.avatar_url || '';
     document.getElementById('avatar-preview').src = currentUser.avatar_url || '';
     document.getElementById('email').value = currentUser.email || '';
     document.getElementById('tfa-toggle').checked = !!currentUser.tfa_enabled;
@@ -313,15 +317,69 @@ async function init() {
   }
 }
 
-document.getElementById('avatar-url').addEventListener('input', (e) => {
-  document.getElementById('avatar-preview').src = e.target.value;
+document.getElementById('js-avatar-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  await uploadAvatar(file);
+  e.target.value = ''; // reset so picking the same file again still fires 'change'
 });
+
+async function uploadAvatar(file) {
+  const MAX_BYTES = 5 * 1024 * 1024;
+  if (file.size > MAX_BYTES) {
+    showMsg('avatar-msg', 'Image must be under 5MB.', true);
+    return;
+  }
+
+  // Show a local preview immediately so it doesn't feel laggy while the
+  // upload/DB update round-trip happens.
+  const localPreview = URL.createObjectURL(file);
+  document.getElementById('avatar-preview').src = localPreview;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await fetch(API_ORIGIN + '/account/avatar', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData, // no Content-Type header — browser sets the multipart boundary
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || res.statusText);
+
+    currentUser = data;
+    document.getElementById('avatar-preview').src = data.avatar_url || '';
+    showMsg('avatar-msg', 'Avatar updated.', false);
+  } catch (e) {
+    document.getElementById('avatar-preview').src = currentUser?.avatar_url || '';
+    showMsg('avatar-msg', e.message, true);
+  } finally {
+    URL.revokeObjectURL(localPreview);
+  }
+}
+
+async function removeAvatar() {
+  try {
+    const res = await fetch(API_ORIGIN + '/account/avatar', {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || res.statusText);
+
+    currentUser = data;
+    document.getElementById('avatar-preview').src = '';
+    showMsg('avatar-msg', 'Avatar removed.', false);
+  } catch (e) {
+    showMsg('avatar-msg', e.message, true);
+  }
+}
 
 async function saveProfile() {
   try {
     await api('PATCH', '/account/me', {
       display_name: document.getElementById('display-name').value.trim(),
-      avatar_url: document.getElementById('avatar-url').value.trim(),
     });
     showMsg('profile-msg', 'Profile updated.', false);
   } catch (e) {
