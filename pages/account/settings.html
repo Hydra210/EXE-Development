@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Settings — EXE Development</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #251B12;
+    --bg-deep: #1A120B;
+    --wood-light: #9C7146;
+    --wood: #7A5531;
+    --wood-dark: #543A20;
+    --wood-deepest: #1F1409;
+    --purple: #9B6FF5;
+    --purple-deep: #B794F6;
+    --purple-soft: rgba(155, 111, 245, 0.16);
+    --amber: #E8A855;
+    --amber-glow: rgba(232, 168, 85, 0.22);
+    --red: #E86A55;
+    --red-glow: rgba(232, 106, 85, 0.16);
+    --text: #F0E4D2;
+    --text-dim: rgba(240, 228, 210, 0.62);
+    --text-dimmer: rgba(240, 228, 210, 0.34);
+    --cream: #F5EBDA;
+    --border: rgba(240, 228, 210, 0.11);
+    --card: rgba(0, 0, 0, 0.22);
+    --font-display: 'Fraunces', serif;
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    padding: 48px 24px 100px;
+  }
+
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--wood-light); display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .eyebrow::before { content: ''; width: 18px; height: 1px; background: var(--wood-light); }
+
+  h1 {
+    font-family: var(--font-display); font-size: clamp(28px, 4vw, 38px);
+    font-weight: 600; letter-spacing: -0.5px; margin-bottom: 40px;
+  }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; margin-bottom: 22px;
+  }
+  .card h2 {
+    font-family: var(--font-display); font-size: 19px; font-weight: 600; margin-bottom: 4px;
+  }
+  .card .desc { font-size: 13px; color: var(--text-dim); margin-bottom: 22px; }
+
+  .row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 14px; }
+  .row:last-child { margin-bottom: 0; }
+  .field { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 6px; }
+  label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dimmer); }
+
+  input {
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text);
+    padding: 11px 14px; font-family: var(--font-ui); font-size: 14px; border-radius: 10px; outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--wood-light); }
+  input:disabled { opacity: 0.5; }
+
+  .btn {
+    padding: 11px 22px; font-family: var(--font-ui); font-size: 13.5px; font-weight: 600;
+    color: var(--cream); border: none; border-radius: 100px; cursor: pointer;
+    background: linear-gradient(155deg, var(--wood-light), var(--wood-dark));
+    white-space: nowrap; transition: filter 0.15s;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-ghost {
+    background: transparent; border: 1px solid var(--border); color: var(--text);
+  }
+  .btn-ghost:hover { border-color: var(--wood-light); filter: none; }
+
+  .btn-danger {
+    background: transparent; border: 1px solid rgba(232, 106, 85, 0.4); color: var(--red);
+  }
+  .btn-danger:hover { background: var(--red-glow); filter: none; }
+
+  .btn-small { padding: 7px 14px; font-size: 12px; }
+
+  .avatar-row { display: flex; align-items: center; gap: 18px; }
+  .avatar-preview {
+    width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+    border: 1px solid var(--border); background: var(--bg-deep);
+  }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+  .toggle-label { font-size: 14px; }
+  .toggle-sub { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
+
+  .switch { position: relative; width: 44px; height: 25px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; cursor: pointer; inset: 0; background: rgba(240,228,210,0.15);
+    border-radius: 100px; transition: 0.2s;
+  }
+  .slider::before {
+    content: ''; position: absolute; height: 19px; width: 19px; left: 3px; top: 3px;
+    background: var(--cream); border-radius: 50%; transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: var(--wood-light); }
+  .switch input:checked + .slider::before { transform: translateX(19px); }
+
+  .session { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .session:last-child { border-bottom: none; padding-bottom: 0; }
+  .session-info { font-size: 13.5px; }
+  .session-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dimmer); margin-top: 3px; }
+  .session-current { display: inline-block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); background: var(--amber-glow); padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  .msg { font-size: 12.5px; margin-top: 10px; display: none; }
+  .msg.error { color: var(--red); }
+  .msg.success { color: #8fd99a; }
+
+  #loading, #login-gate { text-align: center; padding: 80px 20px; color: var(--text-dim); font-family: var(--font-mono); font-size: 13px; }
+  #settings-content { display: none; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Account</div>
+  <h1>Settings</h1>
+
+  <div id="loading">Loading account…</div>
+  <div id="login-gate" style="display:none;">You're not logged in. <a href="/login" style="color: var(--purple-deep);">Log in</a> to manage your account.</div>
+
+  <div id="settings-content">
+
+    <!-- Profile -->
+    <div class="card">
+      <h2>Profile</h2>
+      <div class="desc">Your display name and avatar, shown across EXE Development products.</div>
+
+      <div class="row avatar-row" style="margin-bottom: 22px;">
+        <img id="avatar-preview" class="avatar-preview" src="" alt="Avatar">
+        <div class="field" style="min-width: 220px;">
+          <label>Avatar URL</label>
+          <input id="avatar-url" placeholder="https://…">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Display Name</label>
+          <input id="display-name" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label>Email (contact support to change)</label>
+          <input id="email-display" disabled>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" onclick="saveProfile()">Save Profile</button>
+      </div>
+      <div id="profile-msg" class="msg"></div>
+    </div>
+
+    <!-- Password -->
+    <div class="card">
+      <h2>Password</h2>
+      <div class="desc">You'll need your current password to set a new one. This logs out every other device.</div>
+      <div class="row">
+        <div class="field">
+          <label>Current Password</label>
+          <input id="current-password" type="password">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>New Password</label>
+          <input id="new-password" type="password">
+        </div>
+        <div class="field">
+          <label>Confirm New Password</label>
+          <input id="confirm-password" type="password">
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" onclick="changePassword()">Update Password</button>
+      </div>
+      <div id="password-msg" class="msg"></div>
+    </div>
+
+    <!-- 2FA -->
+    <div class="card">
+      <h2>Two-Factor Authentication</h2>
+      <div class="desc">Adds an emailed code requirement to every login.</div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Require a code on login</div>
+          <div class="toggle-sub" id="tfa-status">Currently off</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="tfa-toggle" onchange="toggle2FA()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div id="tfa-msg" class="msg"></div>
+    </div>
+
+    <!-- Sessions -->
+    <div class="card">
+      <h2>Active Sessions</h2>
+      <div class="desc">Devices currently logged into your account. Revoke any you don't recognize.</div>
+      <div id="sessions-list"><div class="toggle-sub">Loading sessions…</div></div>
+      <div class="row" style="margin-top: 18px;">
+        <button class="btn-ghost btn" onclick="revokeOtherSessions()">Log Out All Other Devices</button>
+      </div>
+      <div id="sessions-msg" class="msg"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// EXE Account Settings — talks to your website's own /api/account/*
+// routes (same-origin), which proxy to the Accounts API server-side
+// and read auth from the httpOnly session cookie. No token ever
+// touches this file — same pattern as your login page.
+// ============================================================
+
+async function api(method, path, body) {
+  const res = await fetch(path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || res.statusText);
+  return data;
+}
+
+function showMsg(id, text, isError) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + (isError ? 'error' : 'success');
+  el.style.display = 'block';
+}
+
+let currentUser = null;
+
+async function init() {
+  try {
+    currentUser = await api('GET', '/api/account/me');
+    document.getElementById('display-name').value = currentUser.display_name || '';
+    document.getElementById('avatar-url').value = currentUser.avatar_url || '';
+    document.getElementById('avatar-preview').src = currentUser.avatar_url || '';
+    document.getElementById('email-display').value = currentUser.email || '';
+    document.getElementById('tfa-toggle').checked = !!currentUser.two_factor_enabled;
+    document.getElementById('tfa-status').textContent = currentUser.two_factor_enabled ? 'Currently on' : 'Currently off';
+
+    await loadSessions();
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('settings-content').style.display = 'block';
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('login-gate').style.display = 'block';
+  }
+}
+
+document.getElementById('avatar-url').addEventListener('input', (e) => {
+  document.getElementById('avatar-preview').src = e.target.value;
+});
+
+async function saveProfile() {
+  try {
+    await api('PATCH', '/api/account/me', {
+      display_name: document.getElementById('display-name').value.trim(),
+      avatar_url: document.getElementById('avatar-url').value.trim(),
+    });
+    showMsg('profile-msg', 'Profile updated.', false);
+  } catch (e) {
+    showMsg('profile-msg', e.message, true);
+  }
+}
+
+async function changePassword() {
+  const current = document.getElementById('current-password').value;
+  const next = document.getElementById('new-password').value;
+  const confirm = document.getElementById('confirm-password').value;
+
+  if (!current || !next) {
+    showMsg('password-msg', 'Fill in both password fields.', true);
+    return;
+  }
+  if (next !== confirm) {
+    showMsg('password-msg', "New passwords don't match.", true);
+    return;
+  }
+
+  try {
+    await api('POST', '/api/account/change-password', {
+      current_password: current,
+      new_password: next,
+    });
+    document.getElementById('current-password').value = '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+    showMsg('password-msg', 'Password updated.', false);
+  } catch (e) {
+    showMsg('password-msg', e.message, true);
+  }
+}
+
+async function toggle2FA() {
+  const enabling = document.getElementById('tfa-toggle').checked;
+  try {
+    await api('POST', '/api/account/2fa', { enabled: enabling });
+    document.getElementById('tfa-status').textContent = enabling ? 'Currently on' : 'Currently off';
+    showMsg('tfa-msg', enabling ? '2FA enabled.' : '2FA disabled.', false);
+  } catch (e) {
+    document.getElementById('tfa-toggle').checked = !enabling; // revert on failure
+    showMsg('tfa-msg', e.message, true);
+  }
+}
+
+async function loadSessions() {
+  const list = document.getElementById('sessions-list');
+  try {
+    const sessions = await api('GET', '/api/account/sessions');
+    list.innerHTML = '';
+    sessions.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'session';
+      div.innerHTML = `
+        <div class="session-info">
+          ${escapeHtml(s.app || 'Unknown app')}${s.is_current ? '<span class="session-current">This device</span>' : ''}
+          <div class="session-meta">${escapeHtml(s.ip || 'unknown IP')} · ${escapeHtml(shortenUA(s.user_agent))} · last active ${s.last_used_at ? new Date(s.last_used_at).toLocaleString() : '—'}</div>
+        </div>
+      `;
+      if (!s.is_current) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-ghost btn btn-small';
+        btn.textContent = 'Revoke';
+        btn.onclick = () => revokeSession(s.id);
+        div.appendChild(btn);
+      }
+      list.appendChild(div);
+    });
+    if (!sessions.length) list.innerHTML = '<div class="toggle-sub">No active sessions found.</div>';
+  } catch (e) {
+    list.innerHTML = `<div class="toggle-sub" style="color:var(--red);">${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function shortenUA(ua) {
+  if (!ua) return 'unknown device';
+  // Just enough to be readable without pulling in a full UA-parsing library.
+  const browser = ua.match(/(Chrome|Firefox|Safari|Edg|OPR)\/[\d.]+/)?.[1] || 'Browser';
+  const os = ua.match(/(Windows|Mac OS X|Linux|Android|iPhone|iPad)/)?.[1] || '';
+  return [browser, os].filter(Boolean).join(' on ');
+}
+
+async function revokeSession(id) {
+  try {
+    await api('DELETE', `/api/account/sessions/${id}`);
+    await loadSessions();
+  } catch (e) {
+    showMsg('sessions-msg', e.message, true);
+  }
+}
+
+async function revokeOtherSessions() {
+  if (!confirm('Log out every other device? You\'ll stay logged in here.')) return;
+  try {
+    await api('POST', '/api/account/sessions/revoke-others');
+    showMsg('sessions-msg', 'All other sessions logged out.', false);
+    await loadSessions();
+  } catch (e) {
+    showMsg('sessions-msg', e.message, true);
+  }
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s ?? '';
+  return d.innerHTML;
+}
+
+init();
+</script>
+</body>
+</html>
