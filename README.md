@@ -119,3 +119,12 @@ so pinging them is cheap.
   do anything, since there's no published extension yet.
 - **Rate limiting on login/register** — noted as not-yet-built in the
   Accounts API's own README too. Worth adding before this is fully public.
+
+## New marketing pages (midnight theme)
+
+`/`, `/sentinel`, `/about` and `/contact` use the shared `static/css/site.css`
+and `static/js/site.js` (particle hero, theme toggle, counters, carousel,
+lightbox, form validation). `/projects`, `/rebloxed`, auth, account and legal
+pages are unchanged. `/contact` posts to `POST /api/contact`, which forwards
+to a Discord channel webhook: set `DISCORD_WEBHOOK_URL` on Render (without it
+the form shows a fallback message and returns 503).

@@ -9,19 +9,34 @@
 # To add OG tags to another page later, just add another entry to OG_TAGS
 # below and call inject_og(html, "/path-key") in that route.
 
+def _og(title: str, desc: str, path: str) -> str:
+    return f"""
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{title}" />
+<meta property="og:description" content="{desc}" />
+<meta property="og:image" content="https://exedevelopement.com/static/og-image.png" />
+<meta property="og:url" content="https://exedevelopement.com{path}" />
+<meta name="theme-color" content="#0a0a0a" />
+<meta name="twitter:card" content="summary_large_image" />
+""".strip()
+
+
 HOMEPAGE_OG = """
 <meta property="og:type" content="website" />
 <meta property="og:title" content="EXE Development" />
-<meta property="og:description" content="We build things worth building." />
+<meta property="og:description" content="We build tools you want." />
 <meta property="og:image" content="https://exedevelopement.com/static/og-image.png" />
 <meta property="og:url" content="https://exedevelopement.com/" />
-<meta name="theme-color" content="#251B12" />
+<meta name="theme-color" content="#0a0a0a" />
 <meta name="twitter:card" content="summary_large_image" />
 """.strip()
 
 # path -> tag block, so more pages can be added here later
 OG_TAGS: dict[str, str] = {
     "/": HOMEPAGE_OG,
+    "/sentinel": _og("Sentinel | EXE Development", "Roblox asset moderation that flags problem assets before they reach players.", "/sentinel"),
+    "/about": _og("About | EXE Development", "Independent studio building useful tools for Roblox developers.", "/about"),
+    "/contact": _og("Contact | EXE Development", "Request a tool or ask about a project.", "/contact"),
 }
 
 
