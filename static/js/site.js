@@ -1,4 +1,4 @@
-
+(()=>{
 const $=(s,c=document)=>c.querySelector(s),$$=(s,c=document)=>[...c.querySelectorAll(s)];
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 try{const t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}
@@ -30,3 +30,4 @@ if(f)f.onsubmit=e=>{e.preventDefault();let ok=true;
 const chk=(id,t,m)=>{const el=$('#'+id),bad=!t(el.value.trim());el.setAttribute('aria-invalid',bad);$('#'+id+'-e').textContent=bad?m:'';if(bad&&ok){el.focus();ok=false}};
 chk('name',v=>v.length>1,'Enter your name.');chk('email',v=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v),'Enter a valid email address.');chk('msg',v=>v.length>=10,'Write at least 10 characters.');
 if(ok)fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('#name').value.trim(),email:$('#email').value.trim(),message:$('#msg').value.trim()})}).then(r=>{if(!r.ok)throw 0;$('#ok').textContent='Message sent. We reply within two days.';f.reset()}).catch(()=>{$('#ok').textContent='Could not send. Reach us on Discord instead.'})};
+})();
