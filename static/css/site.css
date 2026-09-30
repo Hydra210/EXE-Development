@@ -40,5 +40,5 @@ footer{border-top:1px solid var(--bd);padding:4rem 0 2rem;background:var(--card)
 #pre{position:fixed;inset:0;background:var(--bg);z-index:100;display:grid;place-items:center;transition:opacity .5s}#pre.done{opacity:0;pointer-events:none}
 #pre span{font:800 2rem var(--hd);animation:p 1s infinite alternate}@keyframes p{to{opacity:.3;letter-spacing:.15em}}
 .rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}.rv{opacity:1;transform:none}}
-[data-theme=light] .exe-account-trigger{background:#0000000d;border-color:#0003}
+@media(prefers-reduced-motion:reduce){*:not(#pre){animation:none!important;transition:none!important;scroll-behavior:auto}.rv{opacity:1;transform:none}}
+[data-theme=light] .exe-account-trigger{background:#0000000d;border-color:#0003}#pre{animation:hidepre .4s 4s forwards}@keyframes hidepre{to{opacity:0;visibility:hidden}}

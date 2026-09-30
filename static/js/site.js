@@ -9,9 +9,9 @@ $$('.links a').forEach(a=>a.addEventListener('click',()=>$('.links').classList.r
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);if(e.target.dataset.n)count(e.target)}}),{threshold:.2});
 $$('.rv,[data-n]').forEach(e=>io.observe(e));
 function count(el){const n=+el.dataset.n,t0=performance.now();(function f(t){const p=Math.min((t-t0)/1400,1);el.textContent=Math.round(n*(1-Math.pow(1-p,3))).toLocaleString()+(el.dataset.s||'');if(p<1)requestAnimationFrame(f)})(t0)}
-const top=$('#top');top.onclick=()=>scrollTo({top:0});
+const tp=$('#top');tp.onclick=()=>scrollTo({top:0});
 const px=$$('[data-speed]');
-addEventListener('scroll',()=>{top.classList.toggle('on',scrollY>600);if(!reduce)px.forEach(e=>e.style.transform=`translateY(${scrollY*e.dataset.speed}px)`)},{passive:true});
+addEventListener('scroll',()=>{tp.classList.toggle('on',scrollY>600);if(!reduce)px.forEach(e=>e.style.transform=`translateY(${scrollY*e.dataset.speed}px)`)},{passive:true});
 const cv=$('#cv');
 if(cv&&!reduce){const x=cv.getContext('2d');let w,h,m={x:-999,y:-999},ps=[];
 const rs=()=>{w=cv.width=cv.offsetWidth;h=cv.height=cv.offsetHeight;ps=Array.from({length:Math.min(90,w/14|0)},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4}))};
