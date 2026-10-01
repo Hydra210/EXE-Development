@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — EXE Development</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #120d0a;
+    --bg-deep: #090603;
+    --panel: rgba(22, 18, 15, 0.88);
+    --panel-border: rgba(255,255,255,0.08);
+    --text: #f5ede1;
+    --text-muted: rgba(245,237,225,0.72);
+    --accent: #b794f6;
+    --accent-strong: #7c3aed;
+    --accent-soft: rgba(183,148,246,0.16);
+    --wood: #9c7146;
+    --wood-dark: #543a20;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background:
+      repeating-linear-gradient(91deg, rgba(0,0,0,0.12) 0px, transparent 1.5px, transparent 3px, rgba(255,255,255,0.02) 4px, transparent 6px, transparent 14px),
+      repeating-linear-gradient(91deg, transparent 0px, rgba(0,0,0,0.14) 60px, transparent 62px, transparent 140px),
+      var(--bg);
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 28px;
+    background: rgba(12, 9, 7, 0.78);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  .nav-brand { display: flex; align-items: center; gap: 12px; font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; }
+  .nav-brand-mark { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(155deg, var(--accent), var(--accent-strong)); color: white; }
+  .nav-links { display: flex; gap: 20px; font-size: 14px; color: var(--text-muted); }
+  .nav-links a:hover { color: var(--accent); }
+
+  main { max-width: 1120px; margin: 0 auto; padding: 48px 24px 72px; }
+
+  .hero {
+    display: grid;
+    gap: 28px;
+    padding: 32px;
+    border-radius: 32px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.24);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.08;
+  }
+
+  .hero p { max-width: 700px; color: var(--text-muted); line-height: 1.75; font-size: 16px; }
+
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-weight: 600;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .btn-primary {
+    color: white;
+    background: linear-gradient(155deg, var(--accent), var(--accent-strong));
+  }
+  .btn-secondary {
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+    background: rgba(255,255,255,0.04);
+  }
+  .btn-primary:hover, .btn-secondary:hover { transform: translateY(-1px); }
+
+  .grid {
+    display: grid;
+    margin-top: 28px;
+    gap: 20px;
+    grid-template-columns: 1.4fr 0.9fr;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 18px 44px rgba(0,0,0,0.24);
+  }
+
+  .card h2, .card h3 { font-family: 'Fraunces', serif; margin-bottom: 12px; }
+  .card p, .card li { color: var(--text-muted); line-height: 1.7; }
+
+  .project-card {
+    display: grid;
+    gap: 18px;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(183,148,246,0.14);
+    border: 1px solid rgba(183,148,246,0.24);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .feature-list span {
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .mini-card {
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--panel-border);
+  }
+
+  .mini-card h4 { font-size: 15px; margin-bottom: 6px; }
+
+  .footer-note {
+    margin-top: 24px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 16px 18px; }
+    .nav-links { display: none; }
+    main { padding: 24px 16px 48px; }
+    .hero { padding: 24px; }
+    .card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="nav-brand-mark">E</div>
+      <span>EXE Projects</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/legal/contact">Discord</a>
+      <a href="/legal/support">Support</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Projects • Current focus</div>
+      <h1>We build a small set of tools, and we’re starting with one.</h1>
+      <p>Right now, our public work is centered around Rebloxed, but this page is here to keep the wider projects story visible. We’ll keep adding more as they reach a point where they’re worth sharing.</p>
+      <div class="hero-actions">
+        <a href="/rebloxed" class="btn-primary">Open Rebloxed →</a>
+        <a href="/legal/contact" class="btn-secondary">Join the Discord</a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="project-card">
+          <div class="status-pill">● In active development</div>
+          <h2>Rebloxed</h2>
+          <p>A Roblox browser extension built to give profiles a more personal, polished look with custom backgrounds, music, socials, and more.</p>
+          <div class="feature-list">
+            <span>Custom backgrounds</span>
+            <span>Music support</span>
+            <span>Social links</span>
+            <span>Live preview</span>
+          </div>
+          <div class="hero-actions" style="margin-top: 4px;">
+            <a href="/rebloxed" class="btn-primary">View project</a>
+            <a href="/legal/support" class="btn-secondary">Share feedback</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card">
+          <h3>What’s next</h3>
+          <p>We’re keeping the project list lean on purpose. That way each release feels meaningful instead of crowded.</p>
+        </div>
+        <div class="card">
+          <h3>How we share updates</h3>
+          <div class="mini-card">
+            <h4>Discord</h4>
+            <p>Best place to see progress, ask questions, and talk through ideas.</p>
+          </div>
+          <div class="mini-card" style="margin-top: 10px;">
+            <h4>Project pages</h4>
+            <p>Each project gets its own page once it has enough substance to stand on its own.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">If you want to follow along as more projects appear, join our Discord or keep an eye on this page for future additions.</p>
+  </main>
+</body>
+</html>
