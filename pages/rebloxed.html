@@ -392,6 +392,44 @@
     nav{padding:22px 20px;}
     .brand-img{height:72px; margin-top:0;}
   }
+  /* ---- mobile layer (added) ---- */
+  html{-webkit-text-size-adjust:100%;}
+  #model-stage{touch-action:pan-y;}
+  .mock-url{max-width:100%;}
+  @media (max-width:860px){
+    .brand-img{height:40px !important;}
+    .feature-card.featured{padding:32px 24px; gap:24px;}
+    .feature-card.featured .mock-url{white-space:normal; word-break:break-word; width:100%;}
+    .showcase-grid{gap:36px;}
+    .showcase-panel-inner{padding:22px; min-height:220px;}
+    .section-head{margin-bottom:36px;}
+    .hero .actions{flex-wrap:wrap; justify-content:center;}
+  }
+  @media (max-width:600px){
+    nav{padding:8px 14px !important;}
+    .brand-img{height:34px !important; max-width:40vw; object-fit:contain;}
+    .nav-actions{gap:6px;}
+    .nav-auth,.nav-cta{font-size:12px; padding:8px 10px; min-height:36px; display:inline-flex; align-items:center;}
+    .nav-auth{margin-right:0;}
+    .hero{padding:0 16px 28px !important;}
+    #model-stage{width:88vw; height:min(300px,38vh); margin-bottom:-8px;}
+    .eyebrow{font-size:11px; letter-spacing:.14em; margin-bottom:16px;}
+    .hero .actions{flex-direction:column; align-items:stretch; width:100%; max-width:320px; margin:16px 0 24px;}
+    .hero .actions .btn,.cta-final .actions .btn{justify-content:center; width:100%;}
+    .btn{padding:14px 22px;}
+    .stats,.features,.steps,.showcase{padding-left:16px; padding-right:16px;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .stat-card{padding:20px 12px;}
+    .feature-card{padding:26px 22px;}
+    .feature-card.featured{padding:28px 20px;}
+    .feature-card.featured h3{font-size:22px;}
+    .step{padding:0 8px;}
+    .ring.r2,.ring.r3{display:none;}
+    .cta-final{padding:36px 16px;}
+    .cta-final .actions{flex-direction:column; align-items:stretch; max-width:320px; margin:0 auto;}
+    footer{flex-direction:column; gap:14px; padding:28px 16px; text-align:center;}
+    footer .brand-img{height:84px !important;}
+  }
 </style>
 </head>
 <body>
@@ -594,7 +632,7 @@ const camera = new THREE.PerspectiveCamera(19, stage.clientWidth / stage.clientH
 camera.position.set(0, 0, 6);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 860 ? 1.5 : 2));
 renderer.setSize(stage.clientWidth, stage.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
