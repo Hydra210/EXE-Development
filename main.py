@@ -380,38 +380,6 @@ def home():
     html = PAGES_DIR.joinpath("index.html").read_text(encoding="utf-8")
     return HTMLResponse(inject_og(html, "/"))
 
-@app.get("/sentinel")
-def sentinel():
-    return HTMLResponse(inject_og(PAGES_DIR.joinpath("sentinel.html").read_text(encoding="utf-8"), "/sentinel"))
-
-@app.get("/about")
-def about():
-    return HTMLResponse(inject_og(PAGES_DIR.joinpath("about.html").read_text(encoding="utf-8"), "/about"))
-
-@app.get("/contact")
-def contact():
-    return HTMLResponse(inject_og(PAGES_DIR.joinpath("contact.html").read_text(encoding="utf-8"), "/contact"))
-
-class ContactBody(BaseModel):
-    name: str
-    email: EmailStr
-    message: str
-
-@app.post("/api/contact")
-async def contact_send(body: ContactBody):
-    """Forward the contact form to a Discord channel webhook.
-    Set DISCORD_WEBHOOK_URL on Render; without it the form returns 503."""
-    hook = os.environ.get("DISCORD_WEBHOOK_URL", "").strip()
-    if not hook:
-        raise HTTPException(status_code=503, detail="Contact form is not configured.")
-    text = f"**New message**\n**Name:** {body.name[:100]}\n**Email:** {body.email}\n{body.message[:1500]}"
-    try:
-        r = await http_client.post(hook, json={"content": text, "allowed_mentions": {"parse": []}})
-        r.raise_for_status()
-    except httpx.HTTPError:
-        raise HTTPException(status_code=502, detail="Could not deliver message.")
-    return {"ok": True}
-
 @app.get("/rebloxed")
 def rebloxed():
     return page("rebloxed.html")

@@ -8,7 +8,5 @@ services:
     envVars:
       - key: ACCOUNTS_API_URL
         sync: false   # set this manually to your deployed exe-accounts-api URL
-      - key: DISCORD_WEBHOOK_URL
-        sync: false   # optional: Discord webhook that receives contact-form messages
       - key: COOKIE_SECURE
         value: "true"
